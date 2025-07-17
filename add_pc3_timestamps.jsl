@@ -1,0 +1,82 @@
+// JMP Script to add new PC3 timestamp data
+// Generated automatically by update_jmp.py on 2025-07-17 15:14:15
+
+// Open the existing JMP file
+dt = Open("/Users/justinparayno/Library/CloudStorage/GoogleDrive-justin.parayno@swiftsolar.com/Shared drives/Shared with Swift computers (INSECURE)/K3/K3 Tool Data/2025/PC3 Time Windows.jmp");
+
+// Get current number of rows
+current_rows = N Rows(dt);
+
+// Add new rows for the timestamp data
+dt << Add Rows(18);
+
+// Get column references (assuming first two columns are for timestamps)
+col_names = dt << Get Column Names();
+start_col = Column(dt, col_names[1]);
+end_col = Column(dt, col_names[2]);
+
+// Add the new timestamp data
+start_col[current_rows + 1] = "2507160853";
+end_col[current_rows + 1] = "2507160857";
+start_col[current_rows + 2] = "2507160940";
+end_col[current_rows + 2] = "2507160944";
+start_col[current_rows + 3] = "2507161007";
+end_col[current_rows + 3] = "2507161011";
+start_col[current_rows + 4] = "2507161042";
+end_col[current_rows + 4] = "2507161046";
+start_col[current_rows + 5] = "2507161123";
+end_col[current_rows + 5] = "2507161127";
+start_col[current_rows + 6] = "2507161151";
+end_col[current_rows + 6] = "2507161155";
+start_col[current_rows + 7] = "2507161222";
+end_col[current_rows + 7] = "2507161226";
+start_col[current_rows + 8] = "2507161250";
+end_col[current_rows + 8] = "2507161254";
+start_col[current_rows + 9] = "2507161321";
+end_col[current_rows + 9] = "2507161325";
+start_col[current_rows + 10] = "2507161432";
+end_col[current_rows + 10] = "2507161436";
+start_col[current_rows + 11] = "2507161500";
+end_col[current_rows + 11] = "2507161504";
+start_col[current_rows + 12] = "2507161533";
+end_col[current_rows + 12] = "2507161537";
+start_col[current_rows + 13] = "2507161606";
+end_col[current_rows + 13] = "2507161610";
+start_col[current_rows + 14] = "2507161636";
+end_col[current_rows + 14] = "2507161640";
+start_col[current_rows + 15] = "2507161710";
+end_col[current_rows + 15] = "2507161714";
+start_col[current_rows + 16] = "2507161743";
+end_col[current_rows + 16] = "2507161747";
+start_col[current_rows + 17] = "2507161843";
+end_col[current_rows + 17] = "2507161847";
+start_col[current_rows + 18] = "2507162128";
+end_col[current_rows + 18] = "2507162132";
+
+// Save the updated file
+dt << Save();
+
+// Display confirmation message
+Print("Successfully added 18 new timestamp pairs to JMP file");
+Print("JMP file now contains " || Char(N Rows(dt)) || " total rows");
+
+// Show what was added
+Print("\nAdded to JMP file:");
+Print("  Row " || Char(current_rows + 1) || ": " || col_names[1] || "=2507160853, " || col_names[2] || "=2507160857");
+Print("  Row " || Char(current_rows + 2) || ": " || col_names[1] || "=2507160940, " || col_names[2] || "=2507160944");
+Print("  Row " || Char(current_rows + 3) || ": " || col_names[1] || "=2507161007, " || col_names[2] || "=2507161011");
+Print("  Row " || Char(current_rows + 4) || ": " || col_names[1] || "=2507161042, " || col_names[2] || "=2507161046");
+Print("  Row " || Char(current_rows + 5) || ": " || col_names[1] || "=2507161123, " || col_names[2] || "=2507161127");
+Print("  Row " || Char(current_rows + 6) || ": " || col_names[1] || "=2507161151, " || col_names[2] || "=2507161155");
+Print("  Row " || Char(current_rows + 7) || ": " || col_names[1] || "=2507161222, " || col_names[2] || "=2507161226");
+Print("  Row " || Char(current_rows + 8) || ": " || col_names[1] || "=2507161250, " || col_names[2] || "=2507161254");
+Print("  Row " || Char(current_rows + 9) || ": " || col_names[1] || "=2507161321, " || col_names[2] || "=2507161325");
+Print("  Row " || Char(current_rows + 10) || ": " || col_names[1] || "=2507161432, " || col_names[2] || "=2507161436");
+Print("  Row " || Char(current_rows + 11) || ": " || col_names[1] || "=2507161500, " || col_names[2] || "=2507161504");
+Print("  Row " || Char(current_rows + 12) || ": " || col_names[1] || "=2507161533, " || col_names[2] || "=2507161537");
+Print("  Row " || Char(current_rows + 13) || ": " || col_names[1] || "=2507161606, " || col_names[2] || "=2507161610");
+Print("  Row " || Char(current_rows + 14) || ": " || col_names[1] || "=2507161636, " || col_names[2] || "=2507161640");
+Print("  Row " || Char(current_rows + 15) || ": " || col_names[1] || "=2507161710, " || col_names[2] || "=2507161714");
+Print("  Row " || Char(current_rows + 16) || ": " || col_names[1] || "=2507161743, " || col_names[2] || "=2507161747");
+Print("  Row " || Char(current_rows + 17) || ": " || col_names[1] || "=2507161843, " || col_names[2] || "=2507161847");
+Print("  Row " || Char(current_rows + 18) || ": " || col_names[1] || "=2507162128, " || col_names[2] || "=2507162132");
