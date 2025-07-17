@@ -98,8 +98,8 @@ end_col = Column(dt, col_names[2]);
     # Add data insertion code for each timestamp pair
     for i, (start_time, end_time) in enumerate(timestamp_pairs):
         row_num = f"current_rows + {i + 1}"
-        jsl_script += f'''start_col[{row_num}] = "{start_time}";
-end_col[{row_num}] = "{end_time}";
+        jsl_script += f'''start_col[{row_num}] = Num("{start_time}");
+end_col[{row_num}] = Num("{end_time}");
 '''
     
     # Add script footer

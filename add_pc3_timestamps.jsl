@@ -1,5 +1,5 @@
 // JMP Script to add new PC3 timestamp data
-// Generated automatically by update_jmp.py on 2025-07-17 15:14:15
+// Generated automatically by update_jmp.py on 2025-07-17 15:18:51
 
 // Open the existing JMP file
 dt = Open("/Users/justinparayno/Library/CloudStorage/GoogleDrive-justin.parayno@swiftsolar.com/Shared drives/Shared with Swift computers (INSECURE)/K3/K3 Tool Data/2025/PC3 Time Windows.jmp");
@@ -16,42 +16,42 @@ start_col = Column(dt, col_names[1]);
 end_col = Column(dt, col_names[2]);
 
 // Add the new timestamp data
-start_col[current_rows + 1] = "2507160853";
-end_col[current_rows + 1] = "2507160857";
-start_col[current_rows + 2] = "2507160940";
-end_col[current_rows + 2] = "2507160944";
-start_col[current_rows + 3] = "2507161007";
-end_col[current_rows + 3] = "2507161011";
-start_col[current_rows + 4] = "2507161042";
-end_col[current_rows + 4] = "2507161046";
-start_col[current_rows + 5] = "2507161123";
-end_col[current_rows + 5] = "2507161127";
-start_col[current_rows + 6] = "2507161151";
-end_col[current_rows + 6] = "2507161155";
-start_col[current_rows + 7] = "2507161222";
-end_col[current_rows + 7] = "2507161226";
-start_col[current_rows + 8] = "2507161250";
-end_col[current_rows + 8] = "2507161254";
-start_col[current_rows + 9] = "2507161321";
-end_col[current_rows + 9] = "2507161325";
-start_col[current_rows + 10] = "2507161432";
-end_col[current_rows + 10] = "2507161436";
-start_col[current_rows + 11] = "2507161500";
-end_col[current_rows + 11] = "2507161504";
-start_col[current_rows + 12] = "2507161533";
-end_col[current_rows + 12] = "2507161537";
-start_col[current_rows + 13] = "2507161606";
-end_col[current_rows + 13] = "2507161610";
-start_col[current_rows + 14] = "2507161636";
-end_col[current_rows + 14] = "2507161640";
-start_col[current_rows + 15] = "2507161710";
-end_col[current_rows + 15] = "2507161714";
-start_col[current_rows + 16] = "2507161743";
-end_col[current_rows + 16] = "2507161747";
-start_col[current_rows + 17] = "2507161843";
-end_col[current_rows + 17] = "2507161847";
-start_col[current_rows + 18] = "2507162128";
-end_col[current_rows + 18] = "2507162132";
+start_col[current_rows + 1] = Num("2507160853");
+end_col[current_rows + 1] = Num("2507160857");
+start_col[current_rows + 2] = Num("2507160940");
+end_col[current_rows + 2] = Num("2507160944");
+start_col[current_rows + 3] = Num("2507161007");
+end_col[current_rows + 3] = Num("2507161011");
+start_col[current_rows + 4] = Num("2507161042");
+end_col[current_rows + 4] = Num("2507161046");
+start_col[current_rows + 5] = Num("2507161123");
+end_col[current_rows + 5] = Num("2507161127");
+start_col[current_rows + 6] = Num("2507161151");
+end_col[current_rows + 6] = Num("2507161155");
+start_col[current_rows + 7] = Num("2507161222");
+end_col[current_rows + 7] = Num("2507161226");
+start_col[current_rows + 8] = Num("2507161250");
+end_col[current_rows + 8] = Num("2507161254");
+start_col[current_rows + 9] = Num("2507161321");
+end_col[current_rows + 9] = Num("2507161325");
+start_col[current_rows + 10] = Num("2507161432");
+end_col[current_rows + 10] = Num("2507161436");
+start_col[current_rows + 11] = Num("2507161500");
+end_col[current_rows + 11] = Num("2507161504");
+start_col[current_rows + 12] = Num("2507161533");
+end_col[current_rows + 12] = Num("2507161537");
+start_col[current_rows + 13] = Num("2507161606");
+end_col[current_rows + 13] = Num("2507161610");
+start_col[current_rows + 14] = Num("2507161636");
+end_col[current_rows + 14] = Num("2507161640");
+start_col[current_rows + 15] = Num("2507161710");
+end_col[current_rows + 15] = Num("2507161714");
+start_col[current_rows + 16] = Num("2507161743");
+end_col[current_rows + 16] = Num("2507161747");
+start_col[current_rows + 17] = Num("2507161843");
+end_col[current_rows + 17] = Num("2507161847");
+start_col[current_rows + 18] = Num("2507162128");
+end_col[current_rows + 18] = Num("2507162132");
 
 // Save the updated file
 dt << Save();
