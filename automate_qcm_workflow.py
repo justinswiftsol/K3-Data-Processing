@@ -211,11 +211,7 @@ def generate_comprehensive_jsl(previous_exp, current_exp, csv_file, sheet_data):
         if max_match:
             max_time = int(max_match.group(1))
     
-    print(f"🕐 Using time range: Min({min_time}), Max({max_time})")
-    
-    # Calculate late time ranges (second half of the day)
-    late_min_time = max_time  # Late starts where early ends
-    late_max_time = max_time + (max_time - min_time)  # Same duration as early
+    print(f"🕐 Using time range: Min({min_time}), Max({max_time}) - covers full day")
     
     # Combine reference lines from columns H and I  
     all_ref_lines = ref_lines_h + ref_lines_i
@@ -324,11 +320,13 @@ Try(
 // Step 3: Rename table scripts (prepare for new experiment)
 Print("🔄 Renaming table scripts...");
 
-script_types = {{"C60 early", "C60 late", "EDAI early", "EDAI late", "MgF2 early", "MgF2 late"}};
+script_types = {{"C60 early", "EDAI early", "MgF2 early"}};
 
 For( i = 1, i <= N Items( script_types ), i++,
     old_name = "K3P{previous_exp} " || script_types[i] || " 2";
-    new_name = "K3P{current_exp} " || script_types[i];
+    // Remove "early" from the new name since scripts now cover full day
+    base_name = Substitute( script_types[i], " early", "" );
+    new_name = "K3P{current_exp} " || base_name;
 
     Try(
         qcm_dt << Rename Table Script( old_name, new_name );
@@ -341,9 +339,9 @@ For( i = 1, i <= N Items( script_types ), i++,
 // Step 4: Update table scripts with new reference lines
 Print("📊 Updating table scripts with new reference lines...");
 
-// C60 early script
+// C60 script (covers full day)
 Try(
-    qcm_dt << Set Property( "K3P{current_exp} C60 early",
+    qcm_dt << Set Property( "K3P{current_exp} C60",
         Graph Builder(
             Size( 900, 250 ),
             Show Control Panel( 0 ),
@@ -370,48 +368,15 @@ Try(
             )
         )
     );
-    Print("✅ Updated K3P{current_exp} C60 early script");
+    Print("✅ Updated K3P{current_exp} C60 script");
 ,
-    Print("❌ Error updating C60 early script");
+    Print("❌ Error updating C60 script");
 );
 
-// C60 late script
-Try(
-    qcm_dt << Set Property( "K3P{current_exp} C60 late",
-        Graph Builder(
-            Size( 900, 250 ),
-            Show Control Panel( 0 ),
-            Fit to Window( "Off" ),
-            Variables(
-                X( :Date and Time ),
-                Y( :Rate QCM3 C60 GB C7S2 ),
-                Y( :Rate QCM4 C60 NGB C4S2, Position( 1 ) )
-            ),
-            Elements( Line( X, Y( 1 ), Y( 2 ), Legend( 6 ) ) ),
-            SendToReport(
-                Dispatch( {{}}, "Date and Time", ScaleBox,
-                    {{Min( {late_min_time} ), Max( {late_max_time} ), Interval( "Minute" ), Inc( 60 ), Minor Ticks( 5 ),
-                    {combined_ref_lines}
-                    Label Row(
-                        {{Label Orientation( "Vertical" ), Show Major Grid( 1 ),
-                        Show Minor Grid( 1 )}}
-                    )}}
-                ),
-                Dispatch( {{}}, "Rate QCM3 C60 GB C7S2", ScaleBox,
-                    {{Min( 0 ), Max( 4 ), Inc( 1 ), Minor Ticks( 4 ),
-                    Label Row( {{Show Major Grid( 1 ), Show Minor Grid( 1 )}} )}}
-                )
-            )
-        )
-    );
-    Print("✅ Updated K3P{current_exp} C60 late script");
-,
-    Print("❌ Error updating C60 late script");
-);
 
-// EDAI early script
+// EDAI script (covers full day)
 Try(
-    qcm_dt << Set Property( "K3P{current_exp} EDAI early",
+    qcm_dt << Set Property( "K3P{current_exp} EDAI",
         Graph Builder(
             Size( 957, 250 ),
             Fit to Window( "Off" ),
@@ -437,47 +402,16 @@ Try(
             )
         )
     );
-    Print("✅ Updated K3P{current_exp} EDAI early script");
+    Print("✅ Updated K3P{current_exp} EDAI script");
 ,
-    Print("❌ Error updating EDAI early script");
+    Print("❌ Error updating EDAI script");
 );
 
-// EDAI late script
-Try(
-    qcm_dt << Set Property( "K3P{current_exp} EDAI late",
-        Graph Builder(
-            Size( 957, 250 ),
-            Fit to Window( "Off" ),
-            Variables(
-                X( :Date and Time ),
-                Y( :Rate QCM1 EDAI GB 160S2 ),
-                Y( :Rate QCM2 EDAI NGB 160S1, Position( 1 ) )
-            ),
-            Elements( Line( X, Y( 1 ), Y( 2 ), Legend( 6 ) ) ),
-            SendToReport(
-                Dispatch( {{}}, "Date and Time", ScaleBox,
-                    {{Min( {late_min_time} ), Max( {late_max_time} ), Interval( "Minute" ), Inc( 60 ), Minor Ticks( 5 ),
-                    {combined_ref_lines}
-                    Label Row(
-                        {{Label Orientation( "Vertical" ), Show Major Grid( 1 ),
-                        Show Minor Grid( 1 )}}
-                    )}}
-                ),
-                Dispatch( {{}}, "Rate QCM1 EDAI GB 160S2", ScaleBox,
-                    {{Min( 0 ), Max( 10 ), Inc( 2 ), Minor Ticks( 1 ),
-                    Label Row( {{Show Major Grid( 1 ), Show Minor Grid( 1 )}} )}}
-                )
-            )
-        )
-    );
-    Print("✅ Updated K3P{current_exp} EDAI late script");
-,
-    Print("❌ Error updating EDAI late script");
-);
 
-// MgF2 early script
+
+// MgF2 script (covers full day)
 Try(
-    qcm_dt << Set Property( "K3P{current_exp} MgF2 early",
+    qcm_dt << Set Property( "K3P{current_exp} MgF2",
         Graph Builder(
             Size( 921, 352 ),
             Show Control Panel( 0 ),
@@ -508,48 +442,12 @@ Try(
             )
         )
     );
-    Print("✅ Updated K3P{current_exp} MgF2 early script");
+    Print("✅ Updated K3P{current_exp} MgF2 script");
 ,
-    Print("❌ Error updating MgF2 early script");
+    Print("❌ Error updating MgF2 script");
 );
 
-// MgF2 late script
-Try(
-    qcm_dt << Set Property( "K3P{current_exp} MgF2 late",
-        Graph Builder(
-            Size( 921, 352 ),
-            Show Control Panel( 0 ),
-            Fit to Window( "Off" ),
-            Variables(
-                X( :Date and Time ),
-                Y( :Rate QCM5 MgF2 GB C7S1 ),
-                Y( :Rate QCM6 MgF2 NGB C4S1, Position( 1 ) ),
-                Y( :MA QCM5 MgF2 GB C7S1, Position( 1 ) ),
-                Y( :MA QCM6 MgF2 NGB C4S1, Position( 1 ) )
-            ),
-            Elements( Line( X, Y( 1 ), Y( 2 ), Y( 3 ), Y( 4 ), Legend( 6 ) ) ),
-            SendToReport(
-                Dispatch( {{}}, "Date and Time", ScaleBox,
-                    {{Min( {late_min_time} ), Max( {late_max_time} ), Interval( "Minute" ), Inc( 60 ), Minor Ticks( 5 ),
-                    {combined_ref_lines}
-                    Label Row(
-                        {{Label Orientation( "Vertical" ), Show Major Grid( 1 ),
-                        Show Minor Grid( 1 )}}
-                    )}}
-                ),
-                Dispatch( {{}}, "Rate QCM5 MgF2 GB C7S1", ScaleBox,
-                    {{Format( "Fixed Dec", 12, 2 ), Min( 0 ), Max( 8 ), Inc( 1 ),
-                    Minor Ticks( 2 ), Label Row(
-                        {{Show Major Grid( 1 ), Show Minor Grid( 1 )}}
-                    )}}
-                )
-            )
-        )
-    );
-    Print("✅ Updated K3P{current_exp} MgF2 late script");
-,
-    Print("❌ Error updating MgF2 late script");
-);
+
 
 // Step 5: Script automation complete - ready for manual concatenation
 Print("✅ Script setup complete!");
