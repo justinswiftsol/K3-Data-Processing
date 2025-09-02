@@ -1,11 +1,11 @@
 // Auto-generated JSL script for QCM workflow automation
-// Generated on: 2025-08-26 19:11:44
-// Experiment transition: K3P0398 → K3P0403
-// CSV file: QCM_log_data 20250821 2006.csv
+// Generated on: 2025-09-02 10:34:15
+// Experiment transition: K3P0407 → K3P0409
+// CSV file: QCM_log_data 20250829 2126.csv
 // Using pre-formatted JSL strings from Google Sheets
 
 Print("🚀 Starting QCM Workflow Automation...");
-Print("📋 Processing: K3P0398 → K3P0403");
+Print("📋 Processing: K3P0407 → K3P0409");
 
 // Step 1: Open required data tables
 Print("📂 Opening required data tables...");
@@ -21,18 +21,18 @@ Try(
 
 Try(
     // Open previous experiment data
-    qcm_dt = Open("$HOME/Library/CloudStorage/GoogleDrive-justin.parayno@swiftsolar.com/Shared drives/Shared with Swift computers (INSECURE)/K3/K3 PC3 QCM Colnatec/QCM_log_data K3P0398.jmp");
-    Print("✅ Opened QCM_log_data K3P0398.jmp");
+    qcm_dt = Open("$HOME/Library/CloudStorage/GoogleDrive-justin.parayno@swiftsolar.com/Shared drives/Shared with Swift computers (INSECURE)/K3/K3 PC3 QCM Colnatec/QCM_log_data K3P0407.jmp");
+    Print("✅ Opened QCM_log_data K3P0407.jmp");
 ,
-    Print("❌ Error opening QCM_log_data K3P0398.jmp");
-    Throw("Failed to open QCM_log_data K3P0398.jmp");
+    Print("❌ Error opening QCM_log_data K3P0407.jmp");
+    Throw("Failed to open QCM_log_data K3P0407.jmp");
 );
 
 // Step 2: Import new CSV data
 Print("📥 Importing new CSV data...");
 
 Try(
-    csv_dt = Open("/Users/justinparayno/Library/CloudStorage/GoogleDrive-justin.parayno@swiftsolar.com/Shared drives/Shared with Swift computers (INSECURE)/K3/K3 PC3 QCM Colnatec/QCM_log_data 20250821 2006.csv",
+    csv_dt = Open("/Users/justinparayno/Library/CloudStorage/GoogleDrive-justin.parayno@swiftsolar.com/Shared drives/Shared with Swift computers (INSECURE)/K3/K3 PC3 QCM Colnatec/QCM_log_data 20250829 2126.csv",
         columns(
             New Column( "Date", Numeric, "Continuous", Format( "yyyy-mm-dd", 10 ), Input Format( "yyyy-mm-dd" ) ),
             New Column( "Time", Numeric, "Continuous", Format( "h:m:s", 15, 3 ), Input Format( "h:m:s", 3 ) ),
@@ -95,10 +95,10 @@ Print("🔄 Renaming table scripts...");
 script_types = {"C60 early", "EDAI early", "MgF2 early"};
 
 For( i = 1, i <= N Items( script_types ), i++,
-    old_name = "K3P0398 " || script_types[i] || " 2";
+    old_name = "K3P0407 " || script_types[i] || " 2";
     // Remove "early" from the new name since scripts now cover full day
     base_name = Substitute( script_types[i], " early", "" );
-    new_name = "K3P0403 " || base_name;
+    new_name = "K3P0409 " || base_name;
 
     Try(
         qcm_dt << Rename Table Script( old_name, new_name );
@@ -113,7 +113,7 @@ Print("📊 Updating table scripts with new reference lines...");
 
 // C60 script (covers full day)
 Try(
-    qcm_dt << Set Property( "K3P0403 C60",
+    qcm_dt << Set Property( "K3P0409 C60",
         Graph Builder(
             Size( 900, 250 ),
             Show Control Panel( 0 ),
@@ -126,31 +126,35 @@ Try(
             Elements( Line( X, Y( 1 ), Y( 2 ), Legend( 6 ) ) ),
             SendToReport(
                 Dispatch( {}, "Date and Time", ScaleBox,
-                    {Min( 3838604400 ), Max( 3838662000 ), Interval( "Minute" ), Inc( 60 ), Minor Ticks( 5 ),
-                    Add Ref Line(3838625340, "Dashed", "Black", "", 2),
-				Add Ref Line(3838627620, "Dashed", "Black", "", 2),
-				Add Ref Line(3838630380, "Dashed", "Black", "", 2),
-				Add Ref Line(3838632540, "Dashed", "Black", "", 2),
-				Add Ref Line(3838634700, "Dashed", "Black", "", 2),
-				Add Ref Line(3838637700, "Dashed", "Black", "", 2),
-				Add Ref Line(3838639560, "Dashed", "Black", "", 2),
-				Add Ref Line(3838642080, "Dashed", "Black", "", 2),
-				Add Ref Line(3838644480, "Dashed", "Black", "", 2),
-				Add Ref Line(3838646520, "Dashed", "Black", "", 2),
-				Add Ref Line(3838649400, "Dashed", "Black", "", 2),
-				Add Ref Line(3838651020, "Dashed", "Black", "", 2),
-				Add Ref Line(3838625580, "Dashed", "Black", "", 2),
-				Add Ref Line(3838627860, "Dashed", "Black", "", 2),
-				Add Ref Line(3838630620, "Dashed", "Black", "", 2),
-				Add Ref Line(3838632780, "Dashed", "Black", "", 2),
-				Add Ref Line(3838634940, "Dashed", "Black", "", 2),
-				Add Ref Line(3838637940, "Dashed", "Black", "", 2),
-				Add Ref Line(3838639800, "Dashed", "Black", "", 2),
-				Add Ref Line(3838642320, "Dashed", "Black", "", 2),
-				Add Ref Line(3838644720, "Dashed", "Black", "", 2),
-				Add Ref Line(3838646760, "Dashed", "Black", "", 2),
-				Add Ref Line(3838649640, "Dashed", "Black", "", 2),
-				Add Ref Line(3838651260, "Dashed", "Black", "", 2),
+                    {Min( 3839295600 ), Max( 3839353200 ), Interval( "Minute" ), Inc( 60 ), Minor Ticks( 5 ),
+                    Add Ref Line(3839317800, "Dashed", "Black", "", 2),
+				Add Ref Line(3839319600, "Dashed", "Black", "", 2),
+				Add Ref Line(3839321760, "Dashed", "Black", "", 2),
+				Add Ref Line(3839324640, "Dashed", "Black", "", 2),
+				Add Ref Line(3839327160, "Dashed", "Black", "", 2),
+				Add Ref Line(3839329500, "Dashed", "Black", "", 2),
+				Add Ref Line(3839331780, "Dashed", "Black", "", 2),
+				Add Ref Line(3839333340, "Dashed", "Black", "", 2),
+				Add Ref Line(3839336520, "Dashed", "Black", "", 2),
+				Add Ref Line(3839338680, "Dashed", "Black", "", 2),
+				Add Ref Line(3839341260, "Dashed", "Black", "", 2),
+				Add Ref Line(3839343300, "Dashed", "Black", "", 2),
+				Add Ref Line(3839344980, "Dashed", "Black", "", 2),
+				Add Ref Line(3839347320, "Dashed", "Black", "", 2),
+				Add Ref Line(3839318040, "Dashed", "Black", "", 2),
+				Add Ref Line(3839319840, "Dashed", "Black", "", 2),
+				Add Ref Line(3839321940, "Dashed", "Black", "", 2),
+				Add Ref Line(3839324880, "Dashed", "Black", "", 2),
+				Add Ref Line(3839327400, "Dashed", "Black", "", 2),
+				Add Ref Line(3839329740, "Dashed", "Black", "", 2),
+				Add Ref Line(3839332020, "Dashed", "Black", "", 2),
+				Add Ref Line(3839333580, "Dashed", "Black", "", 2),
+				Add Ref Line(3839336760, "Dashed", "Black", "", 2),
+				Add Ref Line(3839338920, "Dashed", "Black", "", 2),
+				Add Ref Line(3839341500, "Dashed", "Black", "", 2),
+				Add Ref Line(3839343540, "Dashed", "Black", "", 2),
+				Add Ref Line(3839345220, "Dashed", "Black", "", 2),
+				Add Ref Line(3839347560, "Dashed", "Black", "", 2),
                     Label Row(
                         {Label Orientation( "Vertical" ), Show Major Grid( 1 ),
                         Show Minor Grid( 1 )}
@@ -163,7 +167,7 @@ Try(
             )
         )
     );
-    Print("✅ Updated K3P0403 C60 script");
+    Print("✅ Updated K3P0409 C60 script");
 ,
     Print("❌ Error updating C60 script");
 );
@@ -171,7 +175,7 @@ Try(
 
 // EDAI script (covers full day)
 Try(
-    qcm_dt << Set Property( "K3P0403 EDAI",
+    qcm_dt << Set Property( "K3P0409 EDAI",
         Graph Builder(
             Size( 957, 250 ),
             Fit to Window( "Off" ),
@@ -183,31 +187,35 @@ Try(
             Elements( Line( X, Y( 1 ), Y( 2 ), Legend( 6 ) ) ),
             SendToReport(
                 Dispatch( {}, "Date and Time", ScaleBox,
-                    {Min( 3838604400 ), Max( 3838662000 ), Interval( "Minute" ), Inc( 60 ), Minor Ticks( 5 ),
-                    Add Ref Line(3838625340, "Dashed", "Black", "", 2),
-				Add Ref Line(3838627620, "Dashed", "Black", "", 2),
-				Add Ref Line(3838630380, "Dashed", "Black", "", 2),
-				Add Ref Line(3838632540, "Dashed", "Black", "", 2),
-				Add Ref Line(3838634700, "Dashed", "Black", "", 2),
-				Add Ref Line(3838637700, "Dashed", "Black", "", 2),
-				Add Ref Line(3838639560, "Dashed", "Black", "", 2),
-				Add Ref Line(3838642080, "Dashed", "Black", "", 2),
-				Add Ref Line(3838644480, "Dashed", "Black", "", 2),
-				Add Ref Line(3838646520, "Dashed", "Black", "", 2),
-				Add Ref Line(3838649400, "Dashed", "Black", "", 2),
-				Add Ref Line(3838651020, "Dashed", "Black", "", 2),
-				Add Ref Line(3838625580, "Dashed", "Black", "", 2),
-				Add Ref Line(3838627860, "Dashed", "Black", "", 2),
-				Add Ref Line(3838630620, "Dashed", "Black", "", 2),
-				Add Ref Line(3838632780, "Dashed", "Black", "", 2),
-				Add Ref Line(3838634940, "Dashed", "Black", "", 2),
-				Add Ref Line(3838637940, "Dashed", "Black", "", 2),
-				Add Ref Line(3838639800, "Dashed", "Black", "", 2),
-				Add Ref Line(3838642320, "Dashed", "Black", "", 2),
-				Add Ref Line(3838644720, "Dashed", "Black", "", 2),
-				Add Ref Line(3838646760, "Dashed", "Black", "", 2),
-				Add Ref Line(3838649640, "Dashed", "Black", "", 2),
-				Add Ref Line(3838651260, "Dashed", "Black", "", 2),
+                    {Min( 3839295600 ), Max( 3839353200 ), Interval( "Minute" ), Inc( 60 ), Minor Ticks( 5 ),
+                    Add Ref Line(3839317800, "Dashed", "Black", "", 2),
+				Add Ref Line(3839319600, "Dashed", "Black", "", 2),
+				Add Ref Line(3839321760, "Dashed", "Black", "", 2),
+				Add Ref Line(3839324640, "Dashed", "Black", "", 2),
+				Add Ref Line(3839327160, "Dashed", "Black", "", 2),
+				Add Ref Line(3839329500, "Dashed", "Black", "", 2),
+				Add Ref Line(3839331780, "Dashed", "Black", "", 2),
+				Add Ref Line(3839333340, "Dashed", "Black", "", 2),
+				Add Ref Line(3839336520, "Dashed", "Black", "", 2),
+				Add Ref Line(3839338680, "Dashed", "Black", "", 2),
+				Add Ref Line(3839341260, "Dashed", "Black", "", 2),
+				Add Ref Line(3839343300, "Dashed", "Black", "", 2),
+				Add Ref Line(3839344980, "Dashed", "Black", "", 2),
+				Add Ref Line(3839347320, "Dashed", "Black", "", 2),
+				Add Ref Line(3839318040, "Dashed", "Black", "", 2),
+				Add Ref Line(3839319840, "Dashed", "Black", "", 2),
+				Add Ref Line(3839321940, "Dashed", "Black", "", 2),
+				Add Ref Line(3839324880, "Dashed", "Black", "", 2),
+				Add Ref Line(3839327400, "Dashed", "Black", "", 2),
+				Add Ref Line(3839329740, "Dashed", "Black", "", 2),
+				Add Ref Line(3839332020, "Dashed", "Black", "", 2),
+				Add Ref Line(3839333580, "Dashed", "Black", "", 2),
+				Add Ref Line(3839336760, "Dashed", "Black", "", 2),
+				Add Ref Line(3839338920, "Dashed", "Black", "", 2),
+				Add Ref Line(3839341500, "Dashed", "Black", "", 2),
+				Add Ref Line(3839343540, "Dashed", "Black", "", 2),
+				Add Ref Line(3839345220, "Dashed", "Black", "", 2),
+				Add Ref Line(3839347560, "Dashed", "Black", "", 2),
                     Label Row(
                         {Label Orientation( "Vertical" ), Show Major Grid( 1 ),
                         Show Minor Grid( 1 )}
@@ -220,7 +228,7 @@ Try(
             )
         )
     );
-    Print("✅ Updated K3P0403 EDAI script");
+    Print("✅ Updated K3P0409 EDAI script");
 ,
     Print("❌ Error updating EDAI script");
 );
@@ -229,7 +237,7 @@ Try(
 
 // MgF2 script (covers full day)
 Try(
-    qcm_dt << Set Property( "K3P0403 MgF2",
+    qcm_dt << Set Property( "K3P0409 MgF2",
         Graph Builder(
             Size( 921, 352 ),
             Show Control Panel( 0 ),
@@ -244,31 +252,35 @@ Try(
             Elements( Line( X, Y( 1 ), Y( 2 ), Y( 3 ), Y( 4 ), Legend( 6 ) ) ),
             SendToReport(
                 Dispatch( {}, "Date and Time", ScaleBox,
-                    {Min( 3838604400 ), Max( 3838662000 ), Interval( "Minute" ), Inc( 60 ), Minor Ticks( 5 ),
-                    Add Ref Line(3838625340, "Dashed", "Black", "", 2),
-				Add Ref Line(3838627620, "Dashed", "Black", "", 2),
-				Add Ref Line(3838630380, "Dashed", "Black", "", 2),
-				Add Ref Line(3838632540, "Dashed", "Black", "", 2),
-				Add Ref Line(3838634700, "Dashed", "Black", "", 2),
-				Add Ref Line(3838637700, "Dashed", "Black", "", 2),
-				Add Ref Line(3838639560, "Dashed", "Black", "", 2),
-				Add Ref Line(3838642080, "Dashed", "Black", "", 2),
-				Add Ref Line(3838644480, "Dashed", "Black", "", 2),
-				Add Ref Line(3838646520, "Dashed", "Black", "", 2),
-				Add Ref Line(3838649400, "Dashed", "Black", "", 2),
-				Add Ref Line(3838651020, "Dashed", "Black", "", 2),
-				Add Ref Line(3838625580, "Dashed", "Black", "", 2),
-				Add Ref Line(3838627860, "Dashed", "Black", "", 2),
-				Add Ref Line(3838630620, "Dashed", "Black", "", 2),
-				Add Ref Line(3838632780, "Dashed", "Black", "", 2),
-				Add Ref Line(3838634940, "Dashed", "Black", "", 2),
-				Add Ref Line(3838637940, "Dashed", "Black", "", 2),
-				Add Ref Line(3838639800, "Dashed", "Black", "", 2),
-				Add Ref Line(3838642320, "Dashed", "Black", "", 2),
-				Add Ref Line(3838644720, "Dashed", "Black", "", 2),
-				Add Ref Line(3838646760, "Dashed", "Black", "", 2),
-				Add Ref Line(3838649640, "Dashed", "Black", "", 2),
-				Add Ref Line(3838651260, "Dashed", "Black", "", 2),
+                    {Min( 3839295600 ), Max( 3839353200 ), Interval( "Minute" ), Inc( 60 ), Minor Ticks( 5 ),
+                    Add Ref Line(3839317800, "Dashed", "Black", "", 2),
+				Add Ref Line(3839319600, "Dashed", "Black", "", 2),
+				Add Ref Line(3839321760, "Dashed", "Black", "", 2),
+				Add Ref Line(3839324640, "Dashed", "Black", "", 2),
+				Add Ref Line(3839327160, "Dashed", "Black", "", 2),
+				Add Ref Line(3839329500, "Dashed", "Black", "", 2),
+				Add Ref Line(3839331780, "Dashed", "Black", "", 2),
+				Add Ref Line(3839333340, "Dashed", "Black", "", 2),
+				Add Ref Line(3839336520, "Dashed", "Black", "", 2),
+				Add Ref Line(3839338680, "Dashed", "Black", "", 2),
+				Add Ref Line(3839341260, "Dashed", "Black", "", 2),
+				Add Ref Line(3839343300, "Dashed", "Black", "", 2),
+				Add Ref Line(3839344980, "Dashed", "Black", "", 2),
+				Add Ref Line(3839347320, "Dashed", "Black", "", 2),
+				Add Ref Line(3839318040, "Dashed", "Black", "", 2),
+				Add Ref Line(3839319840, "Dashed", "Black", "", 2),
+				Add Ref Line(3839321940, "Dashed", "Black", "", 2),
+				Add Ref Line(3839324880, "Dashed", "Black", "", 2),
+				Add Ref Line(3839327400, "Dashed", "Black", "", 2),
+				Add Ref Line(3839329740, "Dashed", "Black", "", 2),
+				Add Ref Line(3839332020, "Dashed", "Black", "", 2),
+				Add Ref Line(3839333580, "Dashed", "Black", "", 2),
+				Add Ref Line(3839336760, "Dashed", "Black", "", 2),
+				Add Ref Line(3839338920, "Dashed", "Black", "", 2),
+				Add Ref Line(3839341500, "Dashed", "Black", "", 2),
+				Add Ref Line(3839343540, "Dashed", "Black", "", 2),
+				Add Ref Line(3839345220, "Dashed", "Black", "", 2),
+				Add Ref Line(3839347560, "Dashed", "Black", "", 2),
                     Label Row(
                         {Label Orientation( "Vertical" ), Show Major Grid( 1 ),
                         Show Minor Grid( 1 )}
@@ -283,7 +295,7 @@ Try(
             )
         )
     );
-    Print("✅ Updated K3P0403 MgF2 script");
+    Print("✅ Updated K3P0409 MgF2 script");
 ,
     Print("❌ Error updating MgF2 script");
 );
@@ -295,12 +307,12 @@ Print("✅ Script setup complete!");
 Print("📊 Table scripts have been updated with correct reference lines and time ranges");
 Print("📋 Next manual steps:");
 Print("   1. Manually concatenate the CSV data with the QCM data table");
-Print("   2. Save the concatenated file as QCM_log_data K3P0403.jmp");
+Print("   2. Save the concatenated file as QCM_log_data K3P0409.jmp");
 Print("   3. Generate the By(Run) analysis table");
 Print("   4. Copy Rate and Frequency data to Google Sheets");
 
 Print("🎉 Automation phase complete!");
 Print("📋 Manual steps remaining:");
 Print("   1. Concatenate the CSV data with the QCM data table");
-Print("   2. Save as QCM_log_data K3P0403.jmp");
+Print("   2. Save as QCM_log_data K3P0409.jmp");
 Print("   3. Generate By(Run) analysis and copy data to Google Sheets");
