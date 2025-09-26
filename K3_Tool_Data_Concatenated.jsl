@@ -1,0 +1,110 @@
+// JSL script to concatenate K3 tool data with user file selection
+// Generated on: 2025-01-21 - User prompt version
+// Based on JMP log analysis showing: Open -> Import -> Concatenate -> Save
+
+// File paths
+main_jmp_file = "/Users/justinparayno/Library/CloudStorage/GoogleDrive-justin.parayno@swiftsolar.com/Shared drives/Shared with Swift computers (INSECURE)/K3/K3 Tool Data/2025/K3 tool data 202507.jmp";
+default_folder = "/Users/justinparayno/Library/CloudStorage/GoogleDrive-justin.parayno@swiftsolar.com/Shared drives/Shared with Swift computers (INSECURE)/K3/K3 Tool Data/2025/";
+
+Print("🚀 Starting K3 data concatenation process...");
+
+// Step 1: Open the main JMP file
+Print("📂 Opening main JMP file...");
+Try(
+    main_dt = Open(main_jmp_file);
+    Print("✅ Successfully opened: K3 tool data 202507.jmp");
+,
+    Print("❌ Error opening main JMP file: " || main_jmp_file);
+    Throw("Failed to open main JMP file");
+);
+
+// Step 2: Prompt user to select CSV file
+Print("📁 Prompting user to select CSV file...");
+csv_file_path = Pick File(
+    "Select Data-MM-DD-Log.csv file to concatenate",
+    default_folder,
+    {"CSV Files|csv", "All Files|*"}
+);
+
+// Check if user cancelled or no file selected
+If(csv_file_path == "",
+    Print("❌ No file selected. Operation cancelled.");
+    Throw("User cancelled file selection");
+);
+
+Print("📄 Selected CSV file: " || csv_file_path);
+
+// Step 3: Import the CSV file (not Open - this matches JMP log)
+Print("📥 Importing CSV file...");
+Try(
+    // Import text file (this matches the JMP log entry "Import text file")
+    csv_dt = Open(csv_file_path, Import Settings(
+        End Of Line(CRLF, LF),
+        End Of Field(Comma, CSV),
+        Strip Quotes(1),
+        Use Apostrophe as Quotation Mark(0),
+        Use Regional Settings(0),
+        Scan Whole File(1),
+        Treat empty columns as numeric(0),
+        CompressNumericColumns(0),
+        CompressCharacterColumns(0),
+        CompressAllowListCheck(1),
+        Labels(1),
+        Column Names Start(1),
+        Data Starts(2),
+        Lines To Read("All"),
+        Year Rule("20xx")
+    ));
+    Print("✅ Successfully imported: " || csv_file_path);
+,
+    Print("❌ Error importing CSV file: " || csv_file_path);
+    Throw("Failed to import CSV file");
+);
+
+// Step 4: Concatenate tables (this matches JMP log "Concatenate tables")
+Print("🔗 Starting concatenation process...");
+Try(
+    // Concatenate with specified options
+    main_dt << Concatenate(
+        csv_dt,
+        Append to first table(1),        // "Append to first table" is checked
+        Save and evaluate formulas(1)    // "Save and evaluate formulas" is checked
+    );
+    Print("✅ Concatenation completed successfully!");
+,
+    Print("❌ Error during concatenation");
+    Throw("Concatenation failed");
+);
+
+// Step 5: Close the CSV data table (keeps workspace clean)
+Try(
+    csv_dt << Close Window();
+    Print("🧹 Closed CSV data table");
+,
+    Print("⚠️ Could not close CSV data table");
+);
+
+// Step 6: Save the main data table (this matches JMP log "Save data table")
+Print("💾 Saving updated main data table...");
+Try(
+    main_dt << Save();
+    Print("✅ Main data table saved successfully!");
+,
+    Print("❌ Error saving main data table");
+    Throw("Failed to save main data table");
+);
+
+// Display summary
+Print("🎉 K3 data concatenation process completed!");
+Print("📊 Data from " || csv_file_path || " has been appended to K3 tool data 202507.jmp");
+Print("💾 Updated file has been saved");
+
+// Optional: Display row count
+Try(
+    row_count = N Rows(main_dt);
+    Print("📈 Total rows in updated table: " || Char(row_count));
+,
+    Print("⚠️ Could not determine row count");
+);
+
+Print("✨ Script execution completed!");

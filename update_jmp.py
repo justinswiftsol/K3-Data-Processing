@@ -1,10 +1,17 @@
 import gspread
 from oauth2client.service_account import ServiceAccountCredentials
 from datetime import datetime
+import subprocess
 import os
-import pandas as pd
 
 def convert_pc3_runs():
+    print("🚀 Starting K3 PC3 Timestamp Extraction...")
+    
+    # Get experiment number from user
+    target_exp = input("Enter the K3P experiment number to extract timestamps from (e.g., 0398): K3P")
+    
+    print(f"\n📋 Extracting timestamps for experiment: K3P{target_exp}")
+    
     # Set up access
     scope = [
         "https://spreadsheets.google.com/feeds",
@@ -16,6 +23,44 @@ def convert_pc3_runs():
     # Open the target sheet and worksheet
     sheet = client.open_by_url("https://docs.google.com/spreadsheets/d/1g9Vb8OJJ67kEaGhXoxyBRHD-3oxouyLQr66b5V6JnVE")
     worksheet = sheet.worksheet("K3 PC3 Runs")
+
+    # Get all data as records to access by column name
+    all_records = worksheet.get_all_records()
+    
+    if not all_records:
+        print("❌ No data found in the worksheet.")
+        return
+
+    # Find the target date by looking for the experiment number
+    target_date = None
+    target_date_str = None
+    
+    print(f"🔍 Searching for K3P{target_exp} in the data...")
+    
+    # Look through all records to find the target experiment
+    for record in all_records:
+        # Check if any column contains the target experiment number
+        record_str = str(record).upper()
+        if f"K3P{target_exp}" in record_str:
+            # Found the target experiment, get its date
+            if 'Date' in record and record['Date']:
+                target_date_str = str(record['Date'])
+                try:
+                    if '/' in target_date_str:
+                        if len(target_date_str.split('/')[0]) == 4:  # YYYY/MM/DD
+                            target_date = datetime.strptime(target_date_str, "%Y/%m/%d").date()
+                        else:  # MM/DD/YYYY
+                            target_date = datetime.strptime(target_date_str, "%m/%d/%Y").date()
+                    break
+                except:
+                    continue
+    
+    if not target_date:
+        print(f"❌ Could not find experiment K3P{target_exp} or its date in the data.")
+        print("💡 Please check that the experiment number is correct.")
+        return
+    
+    print(f"📅 Found experiment K3P{target_exp} on date: {target_date}")
 
     # Read full range of Date, Start Time, End Time
     dates = worksheet.col_values(1)[1:]  # Skip header
@@ -39,115 +84,84 @@ def convert_pc3_runs():
             continue  # Skip rows with formatting issues
 
     if not rows:
-        print("No valid rows found.")
+        print("❌ No valid timestamp rows found.")
         return
 
-    # Determine most recent date
-    latest_date = max(row[0] for row in rows)
-    print(f"\nMost recent run date: {latest_date}")
-
-    # Filter by most recent date
-    recent_rows = [(a, b) for d, a, b in rows if d == latest_date]
+    # Filter by target date (instead of most recent date)
+    target_rows = [(a, b) for d, a, b in rows if d == target_date]
+    
+    if not target_rows:
+        print(f"❌ No timestamps found for date {target_date}.")
+        print("💡 Please check that the experiment ran on the expected date.")
+        return
 
     # Output final result
+    print(f"\n📊 Found {len(target_rows)} timestamp pairs for K3P{target_exp}:")
     print("\nFormatted timestamps:")
-    for start, end in recent_rows:
+    for start, end in target_rows:
         print(f"{start}   {end}")
 
-    # Generate JMP script to add the data
-    generate_jmp_script(recent_rows)
-
-    return recent_rows
-
-
-def generate_jmp_script(timestamp_pairs):
-    """
-    Generate a JMP script (JSL) that can be run in JMP to add timestamp pairs to the existing JMP file
+    # Generate JSL script
+    generate_jsl_script(target_rows, target_exp)
     
-    Args:
-        timestamp_pairs: List of tuples (start_time, end_time) in YYMMDDHHMMM format
-    """
-    if not timestamp_pairs:
-        print("No timestamp pairs to add to JMP file.")
-        return
+    return target_rows
+
+def generate_jsl_script(timestamp_pairs, experiment_number):
+    """Generate JSL script with timestamp pairs"""
     
-    # JMP file path (escaped for JMP script)
-    jmp_file_path = '/Users/justinparayno/Library/CloudStorage/GoogleDrive-justin.parayno@swiftsolar.com/Shared drives/Shared with Swift computers (INSECURE)/K3/K3 Tool Data/2025/PC3 Time Windows.jmp'
-    
-    # Generate JSL script content
-    jsl_script = f'''// JMP Script to add new PC3 timestamp data
-// Generated automatically by update_jmp.py on {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}
+    # Create the JSL script content
+    jsl_content = f"""// Auto-generated JSL script for K3 PC3 QCM temperature logger
+// Generated on: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}
+// Experiment: K3P{experiment_number}
+// Number of timestamp pairs: {len(timestamp_pairs)}
 
-// Open the existing JMP file
-dt = Open("{jmp_file_path}");
+// Open the JMP file
+dt = Open("/Users/justinparayno/Library/CloudStorage/GoogleDrive-justin.parayno@swiftsolar.com/Shared drives/Shared with Swift computers (INSECURE)/K3/K3 Tool Data/2025/PC3 Time Windows.jmp");
 
-// Get current number of rows
-current_rows = N Rows(dt);
+// Add timestamp pairs to the "Run Start" and "Run End" columns
+"""
 
-// Add new rows for the timestamp data
-dt << Add Rows({len(timestamp_pairs)});
+    # Add each timestamp pair
+    for i, (start, end) in enumerate(timestamp_pairs, 1):
+        jsl_content += f"""
+// Timestamp pair {i}
+dt << Add Rows(1);
+current_row = N Rows(dt);
+dt:"Run Start"[current_row] = {start};
+dt:"Run End"[current_row] = {end};"""
 
-// Get column references (assuming first two columns are for timestamps)
-col_names = dt << Get Column Names();
-start_col = Column(dt, col_names[1]);
-end_col = Column(dt, col_names[2]);
+    # Add save command
+    jsl_content += """
 
-// Add the new timestamp data
-'''
-    
-    # Add data insertion code for each timestamp pair
-    for i, (start_time, end_time) in enumerate(timestamp_pairs):
-        row_num = f"current_rows + {i + 1}"
-        jsl_script += f'''start_col[{row_num}] = Num("{start_time}");
-end_col[{row_num}] = Num("{end_time}");
-'''
-    
-    # Add script footer
-    jsl_script += f'''
-// Save the updated file
+// Save the file
 dt << Save();
 
-// Display confirmation message
-Print("Successfully added {len(timestamp_pairs)} new timestamp pairs to JMP file");
-Print("JMP file now contains " || Char(N Rows(dt)) || " total rows");
+// Display completion message
+Print("✅ Successfully added """ + str(len(timestamp_pairs)) + """ timestamp pairs to the JMP file!");
+Print("💾 File has been saved.");
+"""
 
-// Show what was added
-Print("\\nAdded to JMP file:");
-'''
+    # Write the JSL script to file
+    jsl_filename = "update_timestamps.jsl"
+    with open(jsl_filename, 'w') as f:
+        f.write(jsl_content)
     
-    # Add confirmation display code
-    for i, (start_time, end_time) in enumerate(timestamp_pairs):
-        row_num = f"current_rows + {i + 1}"
-        jsl_script += f'''Print("  Row " || Char({row_num}) || ": " || col_names[1] || "={start_time}, " || col_names[2] || "={end_time}");
-'''
+    print(f"\n✅ JSL script generated: {jsl_filename}")
+    print(f"📝 Added {len(timestamp_pairs)} timestamp pairs to the script")
     
-    # Write the JSL script to a file
-    script_filename = "add_pc3_timestamps.jsl"
-    script_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), script_filename)
-    
+    # Open the JSL file in JMP
     try:
-        with open(script_path, 'w') as f:
-            f.write(jsl_script)
-        
-        print(f"\\n✅ JMP script generated successfully!")
-        print(f"📄 Script saved as: {script_path}")
-        print(f"📊 Will add {len(timestamp_pairs)} timestamp pairs to JMP file")
-        
-        print("\\n🔧 How to use:")
-        print("1. Open JMP software")
-        print("2. Go to File → Open → Script...")
-        print(f"3. Select the file: {script_filename}")
-        print("4. Click 'Run Script' or press Ctrl+R (Cmd+R on Mac)")
-        print("5. The script will automatically add the new data to your JMP file")
-        
-        # Display what was added
-        print("\nTimestamp pairs that will be added to JMP file:")
-        for i, (start, end) in enumerate(timestamp_pairs):
-            print(f"  Pair {i + 1}: Start={start}, End={end}")
-            
-    except Exception as e:
-        print(f"Error generating JMP script: {e}")
-
+        print("🚀 Opening JSL script in JMP...")
+        subprocess.run([
+            "open", 
+            "-a", "JMP 18", 
+            jsl_filename
+        ], check=True)
+        print("✅ JSL script opened in JMP successfully!")
+        print("👆 Click 'Run' or press Cmd+R in JMP to execute the script")
+    except subprocess.CalledProcessError as e:
+        print(f"❌ Error opening JSL script in JMP: {e}")
+        print(f"📁 You can manually open the file: {os.path.abspath(jsl_filename)}")
 
 # Run it
 if __name__ == "__main__":

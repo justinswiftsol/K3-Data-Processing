@@ -1,0 +1,318 @@
+// Auto-generated JSL script for QCM workflow automation
+// Generated on: 2025-09-02 10:34:15
+// Experiment transition: K3P0407 → K3P0409
+// CSV file: QCM_log_data 20250829 2126.csv
+// Using pre-formatted JSL strings from Google Sheets
+
+Print("🚀 Starting QCM Workflow Automation...");
+Print("📋 Processing: K3P0407 → K3P0409");
+
+// Step 1: Open required data tables
+Print("📂 Opening required data tables...");
+
+Try(
+    // Open PC3 Time Windows (required for scripts to run)
+    pc3_dt = Open("$HOME/Library/CloudStorage/GoogleDrive-justin.parayno@swiftsolar.com/Shared drives/Shared with Swift computers (INSECURE)/K3/K3 Tool Data/2025/PC3 Time Windows.jmp");
+    Print("✅ Opened PC3 Time Windows.jmp");
+,
+    Print("❌ Error opening PC3 Time Windows.jmp");
+    Throw("Failed to open PC3 Time Windows.jmp");
+);
+
+Try(
+    // Open previous experiment data
+    qcm_dt = Open("$HOME/Library/CloudStorage/GoogleDrive-justin.parayno@swiftsolar.com/Shared drives/Shared with Swift computers (INSECURE)/K3/K3 PC3 QCM Colnatec/QCM_log_data K3P0407.jmp");
+    Print("✅ Opened QCM_log_data K3P0407.jmp");
+,
+    Print("❌ Error opening QCM_log_data K3P0407.jmp");
+    Throw("Failed to open QCM_log_data K3P0407.jmp");
+);
+
+// Step 2: Import new CSV data
+Print("📥 Importing new CSV data...");
+
+Try(
+    csv_dt = Open("/Users/justinparayno/Library/CloudStorage/GoogleDrive-justin.parayno@swiftsolar.com/Shared drives/Shared with Swift computers (INSECURE)/K3/K3 PC3 QCM Colnatec/QCM_log_data 20250829 2126.csv",
+        columns(
+            New Column( "Date", Numeric, "Continuous", Format( "yyyy-mm-dd", 10 ), Input Format( "yyyy-mm-dd" ) ),
+            New Column( "Time", Numeric, "Continuous", Format( "h:m:s", 15, 3 ), Input Format( "h:m:s", 3 ) ),
+            New Column( "Unix Timestamp", Numeric, "Continuous", Format( "Best", 12 ) ),
+            New Column( "Rate QCM1 EDAI GB 160S2", Numeric, "Continuous", Format( "Best", 12 ) ),
+            New Column( "Rate QCM2 EDAI NGB 160S1", Numeric, "Continuous", Format( "Best", 12 ) ),
+            New Column( "Rate QCM3 C60 GB C7S2", Numeric, "Continuous", Format( "Best", 12 ) ),
+            New Column( "Rate QCM4 C60 NGB C4S2", Numeric, "Continuous", Format( "Best", 12 ) ),
+            New Column( "Rate QCM5 MgF2 GB C7S1", Numeric, "Continuous", Format( "Best", 12 ) ),
+            New Column( "Rate QCM6 MgF2 NGB C4S1", Numeric, "Continuous", Format( "Best", 12 ) ),
+            New Column( "MA QCM1 EDAI GB 160S2", Numeric, "Continuous", Format( "Best", 12 ) ),
+            New Column( "MA QCM2 EDAI NGB 160S1", Numeric, "Continuous", Format( "Best", 12 ) ),
+            New Column( "MA QCM3 C60 GB C7S2", Numeric, "Continuous", Format( "Best", 12 ) ),
+            New Column( "MA QCM4 C60 NGB C4S2", Numeric, "Continuous", Format( "Best", 12 ) ),
+            New Column( "MA QCM5 MgF2 GB C7S1", Numeric, "Continuous", Format( "Best", 12 ) ),
+            New Column( "MA QCM6 MgF2 NGB C4S1", Numeric, "Continuous", Format( "Best", 12 ) ),
+            New Column( "Frequency QCM1 EDAI GB 160S2", Numeric, "Continuous", Format( "Best", 12 ) ),
+            New Column( "Frequency QCM2 EDAI NGB 160S1", Numeric, "Continuous", Format( "Best", 12 ) ),
+            New Column( "Frequency QCM3 C60 GB C7S2", Numeric, "Continuous", Format( "Best", 12 ) ),
+            New Column( "Frequency QCM4 C60 NGB C4S2", Numeric, "Continuous", Format( "Best", 12 ) ),
+            New Column( "Frequency QCM5 MgF2 GB C7S1", Numeric, "Continuous", Format( "Best", 12 ) ),
+            New Column( "Frequency QCM6 MgF2 NGB C4S1", Numeric, "Continuous", Format( "Best", 12 ) ),
+            New Column( "Thickness QCM1 EDAI GB 160S2", Numeric, "Continuous", Format( "Best", 12 ) ),
+            New Column( "Thickness QCM2 EDAI NGB 160S1", Numeric, "Continuous", Format( "Best", 12 ) ),
+            New Column( "Thickness QCM3 C60 GB C7S2", Numeric, "Continuous", Format( "Best", 12 ) ),
+            New Column( "Thickness QCM4 C60 NGB C4S2", Numeric, "Continuous", Format( "Best", 12 ) ),
+            New Column( "Thickness QCM5 MgF2 GB C7S1", Numeric, "Continuous", Format( "Best", 12 ) ),
+            New Column( "Thickness QCM6 MgF2 NGB C4S1", Numeric, "Continuous", Format( "Best", 12 ) ),
+            New Column( "Version", Character, "Nominal" )
+        ),
+        Import Settings(
+            End Of Line( CRLF, CR, LF ),
+            End Of Field( Comma, CSV( 1 ) ),
+            Treat Leading Zeros as Character( 1 ),
+            Strip Quotes( 0 ),
+            Use Apostrophe as Quotation Mark( 0 ),
+            Use Regional Settings( 0 ),
+            Scan Whole File( 1 ),
+            Treat empty columns as numeric( 0 ),
+            CompressNumericColumns( 0 ),
+            CompressCharacterColumns( 0 ),
+            CompressAllowListCheck( 0 ),
+            Labels( 1 ),
+            Column Names Start( 1 ),
+            First Named Column( 1 ),
+            Data Starts( 2 ),
+            Lines To Read( "All" ),
+            Year Rule( "20xx" )
+        )
+    );
+    Print("✅ CSV data imported successfully");
+,
+    Print("❌ Error importing CSV data");
+    Throw("Failed to import CSV data");
+);
+
+// Step 3: Rename table scripts (prepare for new experiment)
+Print("🔄 Renaming table scripts...");
+
+script_types = {"C60 early", "EDAI early", "MgF2 early"};
+
+For( i = 1, i <= N Items( script_types ), i++,
+    old_name = "K3P0407 " || script_types[i] || " 2";
+    // Remove "early" from the new name since scripts now cover full day
+    base_name = Substitute( script_types[i], " early", "" );
+    new_name = "K3P0409 " || base_name;
+
+    Try(
+        qcm_dt << Rename Table Script( old_name, new_name );
+        Print("✅ Renamed: " || old_name || " → " || new_name);
+    ,
+        Print("⚠️ Could not rename: " || old_name);
+    );
+);
+
+// Step 4: Update table scripts with new reference lines
+Print("📊 Updating table scripts with new reference lines...");
+
+// C60 script (covers full day)
+Try(
+    qcm_dt << Set Property( "K3P0409 C60",
+        Graph Builder(
+            Size( 900, 250 ),
+            Show Control Panel( 0 ),
+            Fit to Window( "Off" ),
+            Variables(
+                X( :Date and Time ),
+                Y( :Rate QCM3 C60 GB C7S2 ),
+                Y( :Rate QCM4 C60 NGB C4S2, Position( 1 ) )
+            ),
+            Elements( Line( X, Y( 1 ), Y( 2 ), Legend( 6 ) ) ),
+            SendToReport(
+                Dispatch( {}, "Date and Time", ScaleBox,
+                    {Min( 3839295600 ), Max( 3839353200 ), Interval( "Minute" ), Inc( 60 ), Minor Ticks( 5 ),
+                    Add Ref Line(3839317800, "Dashed", "Black", "", 2),
+				Add Ref Line(3839319600, "Dashed", "Black", "", 2),
+				Add Ref Line(3839321760, "Dashed", "Black", "", 2),
+				Add Ref Line(3839324640, "Dashed", "Black", "", 2),
+				Add Ref Line(3839327160, "Dashed", "Black", "", 2),
+				Add Ref Line(3839329500, "Dashed", "Black", "", 2),
+				Add Ref Line(3839331780, "Dashed", "Black", "", 2),
+				Add Ref Line(3839333340, "Dashed", "Black", "", 2),
+				Add Ref Line(3839336520, "Dashed", "Black", "", 2),
+				Add Ref Line(3839338680, "Dashed", "Black", "", 2),
+				Add Ref Line(3839341260, "Dashed", "Black", "", 2),
+				Add Ref Line(3839343300, "Dashed", "Black", "", 2),
+				Add Ref Line(3839344980, "Dashed", "Black", "", 2),
+				Add Ref Line(3839347320, "Dashed", "Black", "", 2),
+				Add Ref Line(3839318040, "Dashed", "Black", "", 2),
+				Add Ref Line(3839319840, "Dashed", "Black", "", 2),
+				Add Ref Line(3839321940, "Dashed", "Black", "", 2),
+				Add Ref Line(3839324880, "Dashed", "Black", "", 2),
+				Add Ref Line(3839327400, "Dashed", "Black", "", 2),
+				Add Ref Line(3839329740, "Dashed", "Black", "", 2),
+				Add Ref Line(3839332020, "Dashed", "Black", "", 2),
+				Add Ref Line(3839333580, "Dashed", "Black", "", 2),
+				Add Ref Line(3839336760, "Dashed", "Black", "", 2),
+				Add Ref Line(3839338920, "Dashed", "Black", "", 2),
+				Add Ref Line(3839341500, "Dashed", "Black", "", 2),
+				Add Ref Line(3839343540, "Dashed", "Black", "", 2),
+				Add Ref Line(3839345220, "Dashed", "Black", "", 2),
+				Add Ref Line(3839347560, "Dashed", "Black", "", 2),
+                    Label Row(
+                        {Label Orientation( "Vertical" ), Show Major Grid( 1 ),
+                        Show Minor Grid( 1 )}
+                    )}
+                ),
+                Dispatch( {}, "Rate QCM3 C60 GB C7S2", ScaleBox,
+                    {Min( 0 ), Max( 4 ), Inc( 1 ), Minor Ticks( 4 ),
+                    Label Row( {Show Major Grid( 1 ), Show Minor Grid( 1 )} )}
+                )
+            )
+        )
+    );
+    Print("✅ Updated K3P0409 C60 script");
+,
+    Print("❌ Error updating C60 script");
+);
+
+
+// EDAI script (covers full day)
+Try(
+    qcm_dt << Set Property( "K3P0409 EDAI",
+        Graph Builder(
+            Size( 957, 250 ),
+            Fit to Window( "Off" ),
+            Variables(
+                X( :Date and Time ),
+                Y( :Rate QCM1 EDAI GB 160S2 ),
+                Y( :Rate QCM2 EDAI NGB 160S1, Position( 1 ) )
+            ),
+            Elements( Line( X, Y( 1 ), Y( 2 ), Legend( 6 ) ) ),
+            SendToReport(
+                Dispatch( {}, "Date and Time", ScaleBox,
+                    {Min( 3839295600 ), Max( 3839353200 ), Interval( "Minute" ), Inc( 60 ), Minor Ticks( 5 ),
+                    Add Ref Line(3839317800, "Dashed", "Black", "", 2),
+				Add Ref Line(3839319600, "Dashed", "Black", "", 2),
+				Add Ref Line(3839321760, "Dashed", "Black", "", 2),
+				Add Ref Line(3839324640, "Dashed", "Black", "", 2),
+				Add Ref Line(3839327160, "Dashed", "Black", "", 2),
+				Add Ref Line(3839329500, "Dashed", "Black", "", 2),
+				Add Ref Line(3839331780, "Dashed", "Black", "", 2),
+				Add Ref Line(3839333340, "Dashed", "Black", "", 2),
+				Add Ref Line(3839336520, "Dashed", "Black", "", 2),
+				Add Ref Line(3839338680, "Dashed", "Black", "", 2),
+				Add Ref Line(3839341260, "Dashed", "Black", "", 2),
+				Add Ref Line(3839343300, "Dashed", "Black", "", 2),
+				Add Ref Line(3839344980, "Dashed", "Black", "", 2),
+				Add Ref Line(3839347320, "Dashed", "Black", "", 2),
+				Add Ref Line(3839318040, "Dashed", "Black", "", 2),
+				Add Ref Line(3839319840, "Dashed", "Black", "", 2),
+				Add Ref Line(3839321940, "Dashed", "Black", "", 2),
+				Add Ref Line(3839324880, "Dashed", "Black", "", 2),
+				Add Ref Line(3839327400, "Dashed", "Black", "", 2),
+				Add Ref Line(3839329740, "Dashed", "Black", "", 2),
+				Add Ref Line(3839332020, "Dashed", "Black", "", 2),
+				Add Ref Line(3839333580, "Dashed", "Black", "", 2),
+				Add Ref Line(3839336760, "Dashed", "Black", "", 2),
+				Add Ref Line(3839338920, "Dashed", "Black", "", 2),
+				Add Ref Line(3839341500, "Dashed", "Black", "", 2),
+				Add Ref Line(3839343540, "Dashed", "Black", "", 2),
+				Add Ref Line(3839345220, "Dashed", "Black", "", 2),
+				Add Ref Line(3839347560, "Dashed", "Black", "", 2),
+                    Label Row(
+                        {Label Orientation( "Vertical" ), Show Major Grid( 1 ),
+                        Show Minor Grid( 1 )}
+                    )}
+                ),
+                Dispatch( {}, "Rate QCM1 EDAI GB 160S2", ScaleBox,
+                    {Min( 0 ), Max( 10 ), Inc( 2 ), Minor Ticks( 1 ),
+                    Label Row( {Show Major Grid( 1 ), Show Minor Grid( 1 )} )}
+                )
+            )
+        )
+    );
+    Print("✅ Updated K3P0409 EDAI script");
+,
+    Print("❌ Error updating EDAI script");
+);
+
+
+
+// MgF2 script (covers full day)
+Try(
+    qcm_dt << Set Property( "K3P0409 MgF2",
+        Graph Builder(
+            Size( 921, 352 ),
+            Show Control Panel( 0 ),
+            Fit to Window( "Off" ),
+            Variables(
+                X( :Date and Time ),
+                Y( :Rate QCM5 MgF2 GB C7S1 ),
+                Y( :Rate QCM6 MgF2 NGB C4S1, Position( 1 ) ),
+                Y( :MA QCM5 MgF2 GB C7S1, Position( 1 ) ),
+                Y( :MA QCM6 MgF2 NGB C4S1, Position( 1 ) )
+            ),
+            Elements( Line( X, Y( 1 ), Y( 2 ), Y( 3 ), Y( 4 ), Legend( 6 ) ) ),
+            SendToReport(
+                Dispatch( {}, "Date and Time", ScaleBox,
+                    {Min( 3839295600 ), Max( 3839353200 ), Interval( "Minute" ), Inc( 60 ), Minor Ticks( 5 ),
+                    Add Ref Line(3839317800, "Dashed", "Black", "", 2),
+				Add Ref Line(3839319600, "Dashed", "Black", "", 2),
+				Add Ref Line(3839321760, "Dashed", "Black", "", 2),
+				Add Ref Line(3839324640, "Dashed", "Black", "", 2),
+				Add Ref Line(3839327160, "Dashed", "Black", "", 2),
+				Add Ref Line(3839329500, "Dashed", "Black", "", 2),
+				Add Ref Line(3839331780, "Dashed", "Black", "", 2),
+				Add Ref Line(3839333340, "Dashed", "Black", "", 2),
+				Add Ref Line(3839336520, "Dashed", "Black", "", 2),
+				Add Ref Line(3839338680, "Dashed", "Black", "", 2),
+				Add Ref Line(3839341260, "Dashed", "Black", "", 2),
+				Add Ref Line(3839343300, "Dashed", "Black", "", 2),
+				Add Ref Line(3839344980, "Dashed", "Black", "", 2),
+				Add Ref Line(3839347320, "Dashed", "Black", "", 2),
+				Add Ref Line(3839318040, "Dashed", "Black", "", 2),
+				Add Ref Line(3839319840, "Dashed", "Black", "", 2),
+				Add Ref Line(3839321940, "Dashed", "Black", "", 2),
+				Add Ref Line(3839324880, "Dashed", "Black", "", 2),
+				Add Ref Line(3839327400, "Dashed", "Black", "", 2),
+				Add Ref Line(3839329740, "Dashed", "Black", "", 2),
+				Add Ref Line(3839332020, "Dashed", "Black", "", 2),
+				Add Ref Line(3839333580, "Dashed", "Black", "", 2),
+				Add Ref Line(3839336760, "Dashed", "Black", "", 2),
+				Add Ref Line(3839338920, "Dashed", "Black", "", 2),
+				Add Ref Line(3839341500, "Dashed", "Black", "", 2),
+				Add Ref Line(3839343540, "Dashed", "Black", "", 2),
+				Add Ref Line(3839345220, "Dashed", "Black", "", 2),
+				Add Ref Line(3839347560, "Dashed", "Black", "", 2),
+                    Label Row(
+                        {Label Orientation( "Vertical" ), Show Major Grid( 1 ),
+                        Show Minor Grid( 1 )}
+                    )}
+                ),
+                Dispatch( {}, "Rate QCM5 MgF2 GB C7S1", ScaleBox,
+                    {Format( "Fixed Dec", 12, 2 ), Min( 0 ), Max( 8 ), Inc( 1 ),
+                    Minor Ticks( 2 ), Label Row(
+                        {Show Major Grid( 1 ), Show Minor Grid( 1 )}
+                    )}
+                )
+            )
+        )
+    );
+    Print("✅ Updated K3P0409 MgF2 script");
+,
+    Print("❌ Error updating MgF2 script");
+);
+
+
+
+// Step 5: Script automation complete - ready for manual concatenation
+Print("✅ Script setup complete!");
+Print("📊 Table scripts have been updated with correct reference lines and time ranges");
+Print("📋 Next manual steps:");
+Print("   1. Manually concatenate the CSV data with the QCM data table");
+Print("   2. Save the concatenated file as QCM_log_data K3P0409.jmp");
+Print("   3. Generate the By(Run) analysis table");
+Print("   4. Copy Rate and Frequency data to Google Sheets");
+
+Print("🎉 Automation phase complete!");
+Print("📋 Manual steps remaining:");
+Print("   1. Concatenate the CSV data with the QCM data table");
+Print("   2. Save as QCM_log_data K3P0409.jmp");
+Print("   3. Generate By(Run) analysis and copy data to Google Sheets");
