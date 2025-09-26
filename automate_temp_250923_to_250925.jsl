@@ -1,0 +1,373 @@
+// Auto-generated JSL script for Temperature workflow automation
+// Generated on: 2025-09-26 11:04:37
+// Date transition: 250923 → 250925
+// CSV file: SL4824-Combined-LR.csv
+// Using pre-formatted JSL strings from Google Sheets
+
+Print("🌡️ Starting Temperature Workflow Automation...");
+Print("📋 Processing: 250923 → 250925");
+
+// Step 1: Open previous temperature data file
+Print("📂 Opening previous temperature data file...");
+
+Try(
+    // Open previous experiment temperature data
+    temp_dt = Open("$HOME/Library/CloudStorage/GoogleDrive-justin.parayno@swiftsolar.com/Shared drives/Shared with Swift computers (INSECURE)/K3/K3 PC3 source temperature/250923/250923 SL4824-LR.jmp");
+    Print("✅ Opened 250923 SL4824-LR.jmp");
+,
+    Print("❌ Error opening 250923 SL4824-LR.jmp");
+    Throw("Failed to open previous temperature data file");
+);
+
+// Step 2: Clean up data (delete all rows except first row - keeps only header/first data point)
+Print("🧹 Cleaning up previous data (keeping only first row)...");
+
+Try(
+    // Select and delete rows with the specific timestamp (this deletes all rows except the first row)
+    temp_dt << Select Where( :Date and time == 3822799504 );
+    temp_dt << Invert Row Selection;
+    temp_dt << Delete Rows;
+    Print("✅ Cleaned up previous data - kept only first row");
+,
+    Print("⚠️ Could not clean up data - continuing anyway");
+);
+
+// Step 3: Import new CSV data
+Print("📥 Importing new temperature CSV data...");
+
+Try(
+    csv_dt = Open("$HOME/Library/CloudStorage/GoogleDrive-justin.parayno@swiftsolar.com/Shared drives/Shared with Swift computers (INSECURE)/K3/K3 PC3 source temperature/250925/SL4824-Combined-LR.csv",
+        columns(
+            New Column( "Date/Time", Character, "Nominal" ),
+            New Column( "SL4824-LR-1.PV", Numeric, "Continuous", Format( "Best", 12 ) ),
+            New Column( "SL4824-LR-1.SP", Numeric, "Continuous", Format( "Best", 12 ) ),
+            New Column( "SL4824-LR-1.CVH", Numeric, "Continuous", Format( "Best", 12 ) ),
+            New Column( "SL4824-LR-1.CVC", Numeric, "Continuous", Format( "Best", 12 ) ),
+            New Column( "SL4824-LR-1.RS_SP", Numeric, "Continuous", Format( "Best", 12 ) ),
+            New Column( "SL4824-LR-2.PV", Numeric, "Continuous", Format( "Best", 12 ) ),
+            New Column( "SL4824-LR-2.SP", Numeric, "Continuous", Format( "Best", 12 ) ),
+            New Column( "SL4824-LR-2.CVH", Numeric, "Continuous", Format( "Best", 12 ) ),
+            New Column( "SL4824-LR-2.CVC", Numeric, "Continuous", Format( "Best", 12 ) ),
+            New Column( "SL4824-LR-2.RS_SP", Numeric, "Continuous", Format( "Best", 12 ) ),
+            New Column( "SL4824-LR-3.PV", Numeric, "Continuous", Format( "Best", 12 ) ),
+            New Column( "SL4824-LR-3.SP", Numeric, "Continuous", Format( "Best", 12 ) ),
+            New Column( "SL4824-LR-3.CVH", Numeric, "Continuous", Format( "Best", 12 ) ),
+            New Column( "SL4824-LR-3.CVC", Numeric, "Continuous", Format( "Best", 12 ) ),
+            New Column( "SL4824-LR-3.RS_SP", Numeric, "Continuous", Format( "Best", 12 ) ),
+            New Column( "SL4824-LR-4.PV", Numeric, "Continuous", Format( "Best", 12 ) ),
+            New Column( "SL4824-LR-4.SP", Numeric, "Continuous", Format( "Best", 12 ) ),
+            New Column( "SL4824-LR-4.CVH", Numeric, "Continuous", Format( "Best", 12 ) ),
+            New Column( "SL4824-LR-4.CVC", Numeric, "Continuous", Format( "Best", 12 ) ),
+            New Column( "SL4824-LR-4.RS_SP", Numeric, "Continuous", Format( "Best", 12 ) ),
+            New Column( "SL4824-LR-5.PV", Numeric, "Continuous", Format( "Best", 12 ) ),
+            New Column( "SL4824-LR-5.SP", Numeric, "Continuous", Format( "Best", 12 ) ),
+            New Column( "SL4824-LR-5.CVH", Numeric, "Continuous", Format( "Best", 12 ) ),
+            New Column( "SL4824-LR-5.CVC", Numeric, "Continuous", Format( "Best", 12 ) ),
+            New Column( "SL4824-LR-5.RS_SP", Numeric, "Continuous", Format( "Best", 12 ) ),
+            New Column( "SL4824-LR-6.PV", Numeric, "Continuous", Format( "Best", 12 ) ),
+            New Column( "SL4824-LR-6.SP", Numeric, "Continuous", Format( "Best", 12 ) ),
+            New Column( "SL4824-LR-6.CVH", Numeric, "Continuous", Format( "Best", 12 ) ),
+            New Column( "SL4824-LR-6.CVC", Numeric, "Continuous", Format( "Best", 12 ) ),
+            New Column( "SL4824-LR-6.RS_SP", Numeric, "Continuous", Format( "Best", 12 ) ),
+            New Column( "Version", Character, "Nominal" )
+        ),
+        Import Settings(
+            End Of Line( CRLF, CR, LF ),
+            End Of Field( Comma, CSV( 1 ) ),
+            Treat Leading Zeros as Character( 1 ),
+            Strip Quotes( 0 ),
+            Use Apostrophe as Quotation Mark( 0 ),
+            Use Regional Settings( 0 ),
+            Scan Whole File( 1 ),
+            Treat empty columns as numeric( 0 ),
+            CompressNumericColumns( 0 ),
+            CompressCharacterColumns( 0 ),
+            CompressAllowListCheck( 0 ),
+            Labels( 1 ),
+            Column Names Start( 1 ),
+            First Named Column( 1 ),
+            Data Starts( 2 ),
+            Lines To Read( "All" ),
+            Year Rule( "20xx" )
+        )
+    );
+    Print("✅ Temperature CSV data imported successfully");
+,
+    Print("❌ Error importing temperature CSV data");
+    Throw("Failed to import temperature CSV data");
+);
+
+// Step 4: Create new table scripts (copies of previous experiment scripts)
+Print("🔄 Creating new temperature table scripts...");
+
+// Create new scripts for current experiment based on the JMP log pattern
+// From the log, we see the pattern: rename "K3P#### XXX T 2" to "K3P250925 XXX T"
+script_types = {"C60 T", "EDAI T", "MgF2 T"};
+
+For( i = 1, i <= N Items( script_types ), i++,
+    script_type = script_types[i];
+    
+    Try(
+        // Get all table script names to find the right one to copy
+        script_names = temp_dt << Get Property Names;
+        found_script = "";
+        
+        // Look for scripts ending with " 2" to rename
+        For( j = 1, j <= N Items( script_names ), j++,
+            script_name = script_names[j];
+            If( Contains( script_name, script_type ) & Contains( script_name, " 2" ),
+                found_script = script_name;
+                Break();
+            );
+        );
+        
+        If( found_script != "",
+            new_name = "K3P0428 " || script_type;
+            temp_dt << Rename Table Script( found_script, new_name );
+            Print("✅ Created new script: " || found_script || " → " || new_name);
+        ,
+            Print("⚠️ Could not find script ending with '" || script_type || " 2'");
+            
+            // Alternative: try to find any script with this type and copy it
+            For( j = 1, j <= N Items( script_names ), j++,
+                script_name = script_names[j];
+                If( Contains( script_name, script_type ) & !Contains( script_name, "K3P0428" ),
+                    // Found a script to copy - create new name
+                    new_name = "K3P0428 " || script_type;
+                    
+                    // Get the script content and create a new one
+                    script_content = temp_dt << Get Property( script_name );
+                    temp_dt << Set Property( new_name, script_content );
+                    Print("✅ Copied script: " || script_name || " → " || new_name);
+                    Break();
+                );
+            );
+        );
+    ,
+        Print("❌ Error creating script for: " || script_type);
+    );
+);
+
+// Step 5: Update table scripts with new reference lines and time ranges
+Print("📊 Updating temperature table scripts with new reference lines...");
+
+// C60 Temperature script (SL4824-LR-3.PV and SL4824-LR-4.PV)
+Try(
+    temp_dt << Set Property( "K3P0428 C60 T",
+        Graph Builder(
+            Size( 921, 333 ),
+            Show Control Panel( 0 ),
+            Fit to Window( "Off" ),
+            Variables(
+                X( :Date and time ),
+                Y( :"SL4824-LR-3.PV"n ),
+                Y( :"SL4824-LR-4.PV"n, Position( 1 ) )
+            ),
+            Elements( Line( X, Y( 1 ), Y( 2 ), Legend( 6 ) ) ),
+            SendToReport(
+                Dispatch( {}, "Date and time", ScaleBox,
+                    {Min( 3841628400 ), Max( 3841686000 ), Interval( "Minute" ), Inc( 60 ), Minor Ticks( 5 ),
+                    Add Ref Line(3841645560, "Dashed", "Black", "", 2),
+				Add Ref Line(3841647000, "Dashed", "Black", "", 2),
+				Add Ref Line(3841648680, "Dashed", "Black", "", 2),
+				Add Ref Line(3841650600, "Dashed", "Black", "", 2),
+				Add Ref Line(3841652520, "Dashed", "Black", "", 2),
+				Add Ref Line(3841655280, "Dashed", "Black", "", 2),
+				Add Ref Line(3841657440, "Dashed", "Black", "", 2),
+				Add Ref Line(3841660500, "Dashed", "Black", "", 2),
+				Add Ref Line(3841662360, "Dashed", "Black", "", 2),
+				Add Ref Line(3841663800, "Dashed", "Black", "", 2),
+				Add Ref Line(3841665780, "Dashed", "Black", "", 2),
+				Add Ref Line(3841668120, "Dashed", "Black", "", 2),
+				Add Ref Line(3841669980, "Dashed", "Black", "", 2),
+				Add Ref Line(3841672320, "Dashed", "Black", "", 2),
+				Add Ref Line(3841674600, "Dashed", "Black", "", 2),
+				Add Ref Line(3841676220, "Dashed", "Black", "", 2),
+				Add Ref Line(3841677900, "Dashed", "Black", "", 2),
+				Add Ref Line(3841679940, "Dashed", "Black", "", 2),
+				Add Ref Line(3841645800, "Dashed", "Black", "", 2),
+				Add Ref Line(3841647240, "Dashed", "Black", "", 2),
+				Add Ref Line(3841648920, "Dashed", "Black", "", 2),
+				Add Ref Line(3841650840, "Dashed", "Black", "", 2),
+				Add Ref Line(3841652760, "Dashed", "Black", "", 2),
+				Add Ref Line(3841655520, "Dashed", "Black", "", 2),
+				Add Ref Line(3841657680, "Dashed", "Black", "", 2),
+				Add Ref Line(3841660740, "Dashed", "Black", "", 2),
+				Add Ref Line(3841662600, "Dashed", "Black", "", 2),
+				Add Ref Line(3841664040, "Dashed", "Black", "", 2),
+				Add Ref Line(3841666020, "Dashed", "Black", "", 2),
+				Add Ref Line(3841668300, "Dashed", "Black", "", 2),
+				Add Ref Line(3841670220, "Dashed", "Black", "", 2),
+				Add Ref Line(3841672560, "Dashed", "Black", "", 2),
+				Add Ref Line(3841674840, "Dashed", "Black", "", 2),
+				Add Ref Line(3841676460, "Dashed", "Black", "", 2),
+				Add Ref Line(3841678140, "Dashed", "Black", "", 2),
+				Add Ref Line(3841680180, "Dashed", "Black", "", 2),
+                    Label Row(
+                        {Label Orientation( "Perpendicular" ), Show Major Grid( 1 ),
+                        Show Minor Grid( 1 )}
+                    )}
+                ),
+                Dispatch( {}, "SL4824-LR-3.PV", ScaleBox,
+                    {Min( 450 ), Max( 600 ), Inc( 50 ), Minor Ticks( 4 ),
+                    Label Row( {Show Major Grid( 1 ), Show Minor Grid( 1 )} )}
+                )
+            )
+        )
+    );
+    Print("✅ Updated K3P0428 C60 T script");
+,
+    Print("❌ Error updating C60 T script");
+);
+
+// EDAI Temperature script (SL4824-LR-1.PV and SL4824-LR-2.PV)
+Try(
+    temp_dt << Set Property( "K3P0428 EDAI T",
+        Graph Builder(
+            Size( 921, 333 ),
+            Show Control Panel( 0 ),
+            Fit to Window( "Off" ),
+            Variables(
+                X( :Date and time ),
+                Y( :"SL4824-LR-1.PV"n ),
+                Y( :"SL4824-LR-2.PV"n, Position( 1 ) )
+            ),
+            Elements( Line( X, Y( 1 ), Y( 2 ), Legend( 6 ) ) ),
+            SendToReport(
+                Dispatch( {}, "Date and time", ScaleBox,
+                    {Min( 3841628400 ), Max( 3841686000 ), Interval( "Minute" ), Inc( 60 ), Minor Ticks( 5 ),
+                    Add Ref Line(3841645560, "Dashed", "Black", "", 2),
+				Add Ref Line(3841647000, "Dashed", "Black", "", 2),
+				Add Ref Line(3841648680, "Dashed", "Black", "", 2),
+				Add Ref Line(3841650600, "Dashed", "Black", "", 2),
+				Add Ref Line(3841652520, "Dashed", "Black", "", 2),
+				Add Ref Line(3841655280, "Dashed", "Black", "", 2),
+				Add Ref Line(3841657440, "Dashed", "Black", "", 2),
+				Add Ref Line(3841660500, "Dashed", "Black", "", 2),
+				Add Ref Line(3841662360, "Dashed", "Black", "", 2),
+				Add Ref Line(3841663800, "Dashed", "Black", "", 2),
+				Add Ref Line(3841665780, "Dashed", "Black", "", 2),
+				Add Ref Line(3841668120, "Dashed", "Black", "", 2),
+				Add Ref Line(3841669980, "Dashed", "Black", "", 2),
+				Add Ref Line(3841672320, "Dashed", "Black", "", 2),
+				Add Ref Line(3841674600, "Dashed", "Black", "", 2),
+				Add Ref Line(3841676220, "Dashed", "Black", "", 2),
+				Add Ref Line(3841677900, "Dashed", "Black", "", 2),
+				Add Ref Line(3841679940, "Dashed", "Black", "", 2),
+				Add Ref Line(3841645800, "Dashed", "Black", "", 2),
+				Add Ref Line(3841647240, "Dashed", "Black", "", 2),
+				Add Ref Line(3841648920, "Dashed", "Black", "", 2),
+				Add Ref Line(3841650840, "Dashed", "Black", "", 2),
+				Add Ref Line(3841652760, "Dashed", "Black", "", 2),
+				Add Ref Line(3841655520, "Dashed", "Black", "", 2),
+				Add Ref Line(3841657680, "Dashed", "Black", "", 2),
+				Add Ref Line(3841660740, "Dashed", "Black", "", 2),
+				Add Ref Line(3841662600, "Dashed", "Black", "", 2),
+				Add Ref Line(3841664040, "Dashed", "Black", "", 2),
+				Add Ref Line(3841666020, "Dashed", "Black", "", 2),
+				Add Ref Line(3841668300, "Dashed", "Black", "", 2),
+				Add Ref Line(3841670220, "Dashed", "Black", "", 2),
+				Add Ref Line(3841672560, "Dashed", "Black", "", 2),
+				Add Ref Line(3841674840, "Dashed", "Black", "", 2),
+				Add Ref Line(3841676460, "Dashed", "Black", "", 2),
+				Add Ref Line(3841678140, "Dashed", "Black", "", 2),
+				Add Ref Line(3841680180, "Dashed", "Black", "", 2),
+                    Label Row(
+                        {Label Orientation( "Perpendicular" ), Show Major Grid( 1 ),
+                        Show Minor Grid( 1 )}
+                    )}
+                ),
+                Dispatch( {}, "SL4824-LR-1.PV", ScaleBox,
+                    {Min( 145 ), Max( 170 ), Inc( 5 ), Minor Ticks( 4 ),
+                    Label Row( {Show Major Grid( 1 ), Show Minor Grid( 1 )} )}
+                )
+            )
+        )
+    );
+    Print("✅ Updated K3P0428 EDAI T script");
+,
+    Print("❌ Error updating EDAI T script");
+);
+
+// MgF2 Temperature script (SL4824-LR-5.PV and SL4824-LR-6.PV)
+Try(
+    temp_dt << Set Property( "K3P0428 MgF2 T",
+        Graph Builder(
+            Size( 921, 333 ),
+            Show Control Panel( 0 ),
+            Fit to Window( "Off" ),
+            Variables(
+                X( :Date and time ),
+                Y( :"SL4824-LR-5.PV"n ),
+                Y( :"SL4824-LR-6.PV"n, Position( 1 ) )
+            ),
+            Elements( Line( X, Y( 1 ), Y( 2 ), Legend( 6 ) ) ),
+            SendToReport(
+                Dispatch( {}, "Date and time", ScaleBox,
+                    {Min( 3841628400 ), Max( 3841686000 ), Interval( "Minute" ), Inc( 60 ), Minor Ticks( 5 ),
+                    Add Ref Line(3841645560, "Dashed", "Black", "", 2),
+				Add Ref Line(3841647000, "Dashed", "Black", "", 2),
+				Add Ref Line(3841648680, "Dashed", "Black", "", 2),
+				Add Ref Line(3841650600, "Dashed", "Black", "", 2),
+				Add Ref Line(3841652520, "Dashed", "Black", "", 2),
+				Add Ref Line(3841655280, "Dashed", "Black", "", 2),
+				Add Ref Line(3841657440, "Dashed", "Black", "", 2),
+				Add Ref Line(3841660500, "Dashed", "Black", "", 2),
+				Add Ref Line(3841662360, "Dashed", "Black", "", 2),
+				Add Ref Line(3841663800, "Dashed", "Black", "", 2),
+				Add Ref Line(3841665780, "Dashed", "Black", "", 2),
+				Add Ref Line(3841668120, "Dashed", "Black", "", 2),
+				Add Ref Line(3841669980, "Dashed", "Black", "", 2),
+				Add Ref Line(3841672320, "Dashed", "Black", "", 2),
+				Add Ref Line(3841674600, "Dashed", "Black", "", 2),
+				Add Ref Line(3841676220, "Dashed", "Black", "", 2),
+				Add Ref Line(3841677900, "Dashed", "Black", "", 2),
+				Add Ref Line(3841679940, "Dashed", "Black", "", 2),
+				Add Ref Line(3841645800, "Dashed", "Black", "", 2),
+				Add Ref Line(3841647240, "Dashed", "Black", "", 2),
+				Add Ref Line(3841648920, "Dashed", "Black", "", 2),
+				Add Ref Line(3841650840, "Dashed", "Black", "", 2),
+				Add Ref Line(3841652760, "Dashed", "Black", "", 2),
+				Add Ref Line(3841655520, "Dashed", "Black", "", 2),
+				Add Ref Line(3841657680, "Dashed", "Black", "", 2),
+				Add Ref Line(3841660740, "Dashed", "Black", "", 2),
+				Add Ref Line(3841662600, "Dashed", "Black", "", 2),
+				Add Ref Line(3841664040, "Dashed", "Black", "", 2),
+				Add Ref Line(3841666020, "Dashed", "Black", "", 2),
+				Add Ref Line(3841668300, "Dashed", "Black", "", 2),
+				Add Ref Line(3841670220, "Dashed", "Black", "", 2),
+				Add Ref Line(3841672560, "Dashed", "Black", "", 2),
+				Add Ref Line(3841674840, "Dashed", "Black", "", 2),
+				Add Ref Line(3841676460, "Dashed", "Black", "", 2),
+				Add Ref Line(3841678140, "Dashed", "Black", "", 2),
+				Add Ref Line(3841680180, "Dashed", "Black", "", 2),
+                    Label Row(
+                        {Label Orientation( "Perpendicular" ), Show Major Grid( 1 ),
+                        Show Minor Grid( 1 )}
+                    )}
+                ),
+                Dispatch( {}, "SL4824-LR-5.PV", ScaleBox,
+                    {Min( 1175 ), Max( 1300 ), Inc( 5 ), Minor Ticks( 4 ),
+                    Label Row( {Show Major Grid( 1 ), Show Minor Grid( 1 )} )}
+                )
+            )
+        )
+    );
+    Print("✅ Updated K3P0428 MgF2 T script");
+,
+    Print("❌ Error updating MgF2 T script");
+);
+
+// Step 6: Script automation complete - ready for manual concatenation
+Print("✅ Temperature script setup complete!");
+Print("🌡️ Temperature table scripts have been updated with correct reference lines and time ranges");
+Print("📋 Next manual steps:");
+Print("   1. Manually concatenate the CSV data with the temperature data table");
+Print("   2. Save the concatenated file as 250925 SL4824-LR.jmp");
+Print("   3. The temperature data workflow is ready");
+
+Print("🎉 Temperature automation phase complete!");
+Print("📋 Manual steps remaining:");
+Print("   1. Concatenate the CSV data with the temperature data table");
+Print("   2. Save as 250925 SL4824-LR.jmp in the 250925 folder");
+Print("   3. Temperature plots are ready with updated reference lines");

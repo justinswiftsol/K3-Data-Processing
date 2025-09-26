@@ -1,120 +1,16 @@
-from datetime import datetime
-import subprocess
-import os
-import glob
-import re
-
-
-def automate_k3p_thickness_workflow_part2():
-    """
-    Automate the K3P thickness data workflow Part 2:
-    1. Import most recent K3_PC3 Results CSV file
-    2. Filter data to keep only current experiment
-    3. Save filtered data as K3P#### Process.jmp
-    4. Join with WDXRF and absorption table
-    5. Concatenate with existing WDXRF and absorbance with process.jmp
-    6. Create/update plot script for current experiment
-    7. Save final updated table
-    """
-    
-    print("📏 Starting K3P Thickness Workflow Part 2 Automation...")
-    
-    # Get current experiment number from user
-    current_exp = input("Enter the current experiment number (#### format, e.g., 0426): K3P")
-    
-    print(f"\n🧪 Processing experiment: K3P{current_exp}")
-    
-    # Step 1: Find and import most recent CSV file
-    print("\n📊 Finding most recent K3_PC3 Results CSV file...")
-    csv_file = find_most_recent_pc3_csv()
-    
-    if not csv_file:
-        print("❌ No K3_PC3 Results CSV file found")
-        return
-    
-    print(f"✅ Found CSV file: {os.path.basename(csv_file)}")
-    
-    # Step 2: Generate JMP script for the workflow
-    print("\n📝 Generating JMP script for Part 2 workflow...")
-    jmp_script = generate_part2_jmp_script(current_exp, csv_file)
-    
-    # Step 3: Save JMP script
-    script_filename = f"automate_k3p_thickness_part2_{current_exp}_{datetime.now().strftime('%Y%m%d_%H%M')}.jsl"
-    script_path = os.path.join(os.getcwd(), script_filename)
-    
-    with open(script_path, 'w') as f:
-        f.write(jmp_script)
-    
-    print(f"✅ JMP script saved: {script_filename}")
-    
-    # Step 4: Execute JMP script
-    print("\n🚀 Executing JMP script...")
-    execute_jsl_script(script_path)
-    
-    print("\n🎉 K3P Thickness Workflow Part 2 Complete!")
-    print("\n📋 What was accomplished:")
-    print(f"1. ✅ Imported most recent K3_PC3 Results CSV file")
-    print(f"2. ✅ Filtered data to keep only K3P{current_exp} experiment")
-    print(f"3. ✅ Saved filtered data as K3P{current_exp} Process.jmp")
-    print(f"4. ✅ Joined with WDXRF and absorption table")
-    print(f"5. ✅ Concatenated with existing WDXRF and absorbance with process.jmp")
-    print(f"6. ✅ Created/updated plot script for K3P{current_exp}")
-    print(f"7. ✅ Saved final updated table")
-
-
-def find_most_recent_pc3_csv():
-    """Find the most recent K3_PC3 Results CSV file in the Data Genie Library"""
-    data_genie_path = "/Users/justinparayno/Desktop/Data Genie Library"
-    
-    if not os.path.exists(data_genie_path):
-        print(f"❌ Data Genie Library path not found: {data_genie_path}")
-        return None
-    
-    # Look for K3_PC3 Results files
-    pattern = os.path.join(data_genie_path, "K3_PC3 Results *.csv")
-    csv_files = glob.glob(pattern)
-    
-    if not csv_files:
-        print("❌ No K3_PC3 Results CSV files found in Data Genie Library")
-        return None
-    
-    # Sort by modification time to get the most recent
-    csv_files.sort(key=os.path.getmtime, reverse=True)
-    most_recent = csv_files[0]
-    
-    print(f"📁 Found {len(csv_files)} K3_PC3 Results files, using most recent")
-    
-    return most_recent
-
-
-def generate_part2_jmp_script(current_exp, csv_file):
-    """Generate JSL script for Part 2 workflow"""
-    
-    csv_filename = os.path.basename(csv_file)
-    csv_path_jsl = csv_file.replace('\\', '/')  # Convert to forward slashes for JSL
-    
-    experiment_id = f"K3P{current_exp}"
-    
-    # Define file paths for Google Drive
-    google_drive_base = "$HOME/Library/CloudStorage/GoogleDrive-justin.parayno@swiftsolar.com/Shared drives/R&D - Passivation/Passivation Projects 2024+/RD.E5: Process window specs and drift for inline ETL1   vendor demo/2025Q3 Data"
-    
-    process_file_path = f"{google_drive_base}/K3P{current_exp} Process.jmp"
-    wdxrf_absorption_path = f"{google_drive_base}/WDXRF and absorption.jmp"
-    final_table_path = f"{google_drive_base}/WDXRF and absorbance with process.jmp"
-    
-    jsl_script = f'''// Auto-generated JSL script for K3P Thickness workflow Part 2
-// Generated on: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}
-// Current Experiment: {experiment_id}
-// Source CSV: {csv_filename}
+// Auto-generated JSL script for K3P Thickness workflow Part 2
+// Generated on: 2025-09-26 11:22:22
+// Current Experiment: K3P0428
+// Source CSV: K3_PC3 Results 2025-09-26_111827.csv
 
 Print("📏 Starting K3P Thickness Workflow Part 2...");
-Print("🧪 Processing experiment: {experiment_id}");
+Print("🧪 Processing experiment: K3P0428");
 
 // Step 1: Import K3_PC3 Results CSV file
 Print("📊 Importing K3_PC3 Results CSV file...");
 Try(
     dt_pc3 = Open(
-        "{csv_path_jsl}",
+        "/Users/justinparayno/Desktop/Data Genie Library/K3_PC3 Results 2025-09-26_111827.csv",
         columns(
             New Column( "sampleID", Character, "Nominal" ),
             New Column( "K3_PC3 Date", Numeric, "Continuous", Format( "y/m/d", 10 ), Input Format( "y/m/d" ) ),
@@ -236,15 +132,15 @@ Try(
     Print("✅ Successfully imported K3_PC3 Results CSV");
 ,
     Print("❌ Error importing K3_PC3 Results CSV file");
-    Print("📁 File path: {csv_path_jsl}");
+    Print("📁 File path: /Users/justinparayno/Desktop/Data Genie Library/K3_PC3 Results 2025-09-26_111827.csv");
     Throw();
 );
 
-// Step 2: Filter data to keep only current experiment ({experiment_id})
-Print("🔍 Filtering data for experiment {experiment_id}...");
+// Step 2: Filter data to keep only current experiment (K3P0428)
+Print("🔍 Filtering data for experiment K3P0428...");
 Try(
     // Select rows matching the current experiment
-    dt_pc3 << Select Where( :K3_PC3 Session == "{experiment_id}" );
+    dt_pc3 << Select Where( :K3_PC3 Session == "K3P0428" );
     
     // Invert selection to select all OTHER experiments
     dt_pc3 << Invert Row Selection;
@@ -252,36 +148,36 @@ Try(
     // Delete all other experiments (keeping only current experiment)
     dt_pc3 << Delete Rows;
     
-    Print("✅ Successfully filtered data for {experiment_id}");
+    Print("✅ Successfully filtered data for K3P0428");
     Print("📊 Rows remaining: " || Char(N Rows(dt_pc3)));
 ,
-    Print("❌ Error filtering data for {experiment_id}");
+    Print("❌ Error filtering data for K3P0428");
     Throw();
 );
 
-// Step 3: Save filtered data as K3P{current_exp} Process.jmp
-Print("💾 Saving filtered data as K3P{current_exp} Process.jmp...");
+// Step 3: Save filtered data as K3P0428 Process.jmp
+Print("💾 Saving filtered data as K3P0428 Process.jmp...");
 Try(
-    dt_pc3 << Save( "{process_file_path}" );
-    Print("✅ Successfully saved: K3P{current_exp} Process.jmp");
+    dt_pc3 << Save( "$HOME/Library/CloudStorage/GoogleDrive-justin.parayno@swiftsolar.com/Shared drives/R&D - Passivation/Passivation Projects 2024+/RD.E5: Process window specs and drift for inline ETL1   vendor demo/2025Q3 Data/K3P0428 Process.jmp" );
+    Print("✅ Successfully saved: K3P0428 Process.jmp");
 ,
-    Print("❌ Error saving K3P{current_exp} Process.jmp");
-    Print("📁 Attempted path: {process_file_path}");
+    Print("❌ Error saving K3P0428 Process.jmp");
+    Print("📁 Attempted path: $HOME/Library/CloudStorage/GoogleDrive-justin.parayno@swiftsolar.com/Shared drives/R&D - Passivation/Passivation Projects 2024+/RD.E5: Process window specs and drift for inline ETL1   vendor demo/2025Q3 Data/K3P0428 Process.jmp");
 );
 
 // Step 4: Open WDXRF and absorption table
 Print("📊 Opening WDXRF and absorption table...");
 Try(
-    dt_wdxrf = Open( "{wdxrf_absorption_path}" );
+    dt_wdxrf = Open( "$HOME/Library/CloudStorage/GoogleDrive-justin.parayno@swiftsolar.com/Shared drives/R&D - Passivation/Passivation Projects 2024+/RD.E5: Process window specs and drift for inline ETL1   vendor demo/2025Q3 Data/WDXRF and absorption.jmp" );
     Print("✅ Successfully opened WDXRF and absorption.jmp");
 ,
     Print("❌ Error opening WDXRF and absorption.jmp");
-    Print("📁 Path: {wdxrf_absorption_path}");
+    Print("📁 Path: $HOME/Library/CloudStorage/GoogleDrive-justin.parayno@swiftsolar.com/Shared drives/R&D - Passivation/Passivation Projects 2024+/RD.E5: Process window specs and drift for inline ETL1   vendor demo/2025Q3 Data/WDXRF and absorption.jmp");
     Throw();
 );
 
 // Step 5: Join tables
-Print("🔗 Joining WDXRF and absorption with K3P{current_exp} Process...");
+Print("🔗 Joining WDXRF and absorption with K3P0428 Process...");
 Try(
     dt_joined = dt_wdxrf << Join(
         With( dt_pc3 ),
@@ -289,7 +185,7 @@ Try(
         Drop multiples( 0, 0 ),
         Include Nonmatches( 0, 0 ),
         Preserve main table order( 1 ),
-        Output Table( "Join of WDXRF and absorption with K3P{current_exp} Process" )
+        Output Table( "Join of WDXRF and absorption with K3P0428 Process" )
     );
     Print("✅ Successfully joined tables");
     Print("📊 Joined table rows: " || Char(N Rows(dt_joined)));
@@ -301,11 +197,11 @@ Try(
 // Step 6: Open existing WDXRF and absorbance with process.jmp
 Print("📊 Opening existing WDXRF and absorbance with process.jmp...");
 Try(
-    dt_existing = Open( "{final_table_path}" );
+    dt_existing = Open( "$HOME/Library/CloudStorage/GoogleDrive-justin.parayno@swiftsolar.com/Shared drives/R&D - Passivation/Passivation Projects 2024+/RD.E5: Process window specs and drift for inline ETL1   vendor demo/2025Q3 Data/WDXRF and absorbance with process.jmp" );
     Print("✅ Successfully opened existing WDXRF and absorbance with process.jmp");
 ,
     Print("❌ Error opening existing WDXRF and absorbance with process.jmp");
-    Print("📁 Path: {final_table_path}");
+    Print("📁 Path: $HOME/Library/CloudStorage/GoogleDrive-justin.parayno@swiftsolar.com/Shared drives/R&D - Passivation/Passivation Projects 2024+/RD.E5: Process window specs and drift for inline ETL1   vendor demo/2025Q3 Data/WDXRF and absorbance with process.jmp");
     Throw();
 );
 
@@ -314,7 +210,7 @@ Print("📝 Concatenating new data with existing table...");
 Try(
     dt_existing << Concatenate(
         dt_joined,
-        Output Table( "Concat of WDXRF and absorbance with process, Join of WDXRF and absorption with K3P{current_exp} Process" ),
+        Output Table( "Concat of WDXRF and absorbance with process, Join of WDXRF and absorption with K3P0428 Process" ),
         Append to first table,
         Keep Formulas
     );
@@ -326,7 +222,7 @@ Try(
 );
 
 // Step 8: Copy and rename table script for current experiment
-Print("📋 Setting up plot script for K3P{current_exp}...");
+Print("📋 Setting up plot script for K3P0428...");
 Try(
     // Get list of existing table scripts
     script_names = dt_existing << Get Property Names;
@@ -335,7 +231,7 @@ Try(
     // Find the most recent K3P script to copy from
     For( i = 1, i <= N Items(script_names), i++,
         script_name = script_names[i];
-        If( Contains(script_name, "K3P") & !Contains(script_name, "{current_exp}"),
+        If( Contains(script_name, "K3P") & !Contains(script_name, "0428"),
             previous_script = script_name;
         );
     );
@@ -343,7 +239,7 @@ Try(
     If( previous_script != "",
         // Copy the previous script
         previous_property = dt_existing << Get Property( previous_script );
-        dt_existing << Set Property( "K3P{current_exp}", previous_property );
+        dt_existing << Set Property( "K3P0428", previous_property );
         Print("✅ Copied plot script from: " || previous_script);
     ,
         Print("⚠️ No previous K3P script found to copy from");
@@ -353,7 +249,7 @@ Try(
 );
 
 // Step 9: Create Graph Builder with data filter for current experiment
-Print("📈 Creating Graph Builder plot for K3P{current_exp}...");
+Print("📈 Creating Graph Builder plot for K3P0428...");
 Try(
     graph_script = Graph Builder(
         Size( 800, 500 ),
@@ -380,40 +276,40 @@ Try(
             Close Outline( 1 ),
             Add Filter(
                 columns( :Name("K3_PC3 Session") ),
-                Where( :Name("K3_PC3 Session") == "{experiment_id}" ),
+                Where( :Name("K3_PC3 Session") == "K3P0428" ),
                 Display( :Name("K3_PC3 Session"), N Items( 15 ), Find( Set Text( "" ) ) )
             )
         ),
         SendToReport(
-            Dispatch( {{}}, "K3_PC3 Sideways Offset", ScaleBox,
-                {{Min( -200 ), Max( 200 ), Inc( 100 ), Minor Ticks( 4 ),
-                Label Row( {{Label Orientation( "Vertical" ), Show Major Grid( 1 )}} )}}
+            Dispatch( {}, "K3_PC3 Sideways Offset", ScaleBox,
+                {Min( -200 ), Max( 200 ), Inc( 100 ), Minor Ticks( 4 ),
+                Label Row( {Label Orientation( "Vertical" ), Show Major Grid( 1 )} )}
             ),
-            Dispatch( {{}}, "K3_PC3 QCM 3 Target Rate in Å per sec", ScaleBox,
-                {{Format( "Fixed Dec", 12, 0 ), Min( 0 ), Max( 3 ), Inc( 1 ),
-                Minor Ticks( 4 ), Label Row( {{Show Major Grid( 1 ), Show Minor Grid( 1 )}} )}}
+            Dispatch( {}, "K3_PC3 QCM 3 Target Rate in Å per sec", ScaleBox,
+                {Format( "Fixed Dec", 12, 0 ), Min( 0 ), Max( 3 ), Inc( 1 ),
+                Minor Ticks( 4 ), Label Row( {Show Major Grid( 1 ), Show Minor Grid( 1 )} )}
             ),
-            Dispatch( {{}}, "C60 in nm", ScaleBox,
-                {{Min( 0 ), Max( 25 ), Inc( 5 ), Minor Ticks( 4 ),
+            Dispatch( {}, "C60 in nm", ScaleBox,
+                {Min( 0 ), Max( 25 ), Inc( 5 ), Minor Ticks( 4 ),
                 Add Ref Line( 14, "Sparse Dash", "Green", "", 1 ),
-                Label Row( {{Show Major Grid( 1 ), Show Minor Grid( 1 )}} )}}
+                Label Row( {Show Major Grid( 1 ), Show Minor Grid( 1 )} )}
             ),
-            Dispatch( {{}}, "MgF2 in nm", ScaleBox,
-                {{Min( 0 ), Max( 10 ), Inc( 5 ), Minor Ticks( 4 ),
+            Dispatch( {}, "MgF2 in nm", ScaleBox,
+                {Min( 0 ), Max( 10 ), Inc( 5 ), Minor Ticks( 4 ),
                 Add Ref Line( 6, "Sparse Dash", "Green", "", 1 ),
-                Label Row( {{Show Major Grid( 1 ), Show Minor Grid( 1 )}} )}}
+                Label Row( {Show Major Grid( 1 ), Show Minor Grid( 1 )} )}
             ),
-            Dispatch( {{}}, "EDAI in nm", ScaleBox,
-                {{Format( "Fixed Dec", 12, 0 ), Min( 0 ), Max( 4 ), Inc( 1 ),
+            Dispatch( {}, "EDAI in nm", ScaleBox,
+                {Format( "Fixed Dec", 12, 0 ), Min( 0 ), Max( 4 ), Inc( 1 ),
                 Minor Ticks( 4 ), Add Ref Line( 2, "Sparse Dash", "Green", "", 1 ),
-                Label Row( {{Show Major Grid( 1 ), Show Minor Grid( 1 )}} )}}
+                Label Row( {Show Major Grid( 1 ), Show Minor Grid( 1 )} )}
             )
         )
     );
     
     // Set the graph script as a table property
-    dt_existing << Set Property( "K3P{current_exp}", graph_script );
-    Print("✅ Created Graph Builder plot for K3P{current_exp}");
+    dt_existing << Set Property( "K3P0428", graph_script );
+    Print("✅ Created Graph Builder plot for K3P0428");
 ,
     Print("❌ Error creating Graph Builder plot");
 );
@@ -421,17 +317,17 @@ Try(
 // Step 10: Save final updated table
 Print("💾 Saving final updated WDXRF and absorbance with process.jmp...");
 Try(
-    dt_existing << Save( "{final_table_path}" );
+    dt_existing << Save( "$HOME/Library/CloudStorage/GoogleDrive-justin.parayno@swiftsolar.com/Shared drives/R&D - Passivation/Passivation Projects 2024+/RD.E5: Process window specs and drift for inline ETL1   vendor demo/2025Q3 Data/WDXRF and absorbance with process.jmp" );
     Print("✅ Successfully saved final updated table");
 ,
     Print("❌ Error saving final table");
-    Print("📁 Path: {final_table_path}");
+    Print("📁 Path: $HOME/Library/CloudStorage/GoogleDrive-justin.parayno@swiftsolar.com/Shared drives/R&D - Passivation/Passivation Projects 2024+/RD.E5: Process window specs and drift for inline ETL1   vendor demo/2025Q3 Data/WDXRF and absorbance with process.jmp");
 );
 
 // Step 11: Display the graph for verification
 Print("📈 Displaying Graph Builder for verification...");
 Try(
-    dt_existing << Run Script( "K3P{current_exp}" );
+    dt_existing << Run Script( "K3P0428" );
     Print("✅ Graph Builder displayed successfully");
 ,
     Print("⚠️ Could not display graph - please check manually");
@@ -439,31 +335,8 @@ Try(
 
 Print("🎉 K3P Thickness Workflow Part 2 Complete!");
 Print("📋 Summary:");
-Print("   • Imported and filtered K3_PC3 Results data for {experiment_id}");
+Print("   • Imported and filtered K3_PC3 Results data for K3P0428");
 Print("   • Joined with WDXRF and absorption data");
 Print("   • Updated master WDXRF and absorbance with process table");
-Print("   • Created plot script for {experiment_id}");
+Print("   • Created plot script for K3P0428");
 Print("   • Saved all updated files");
-'''
-
-    return jsl_script
-
-
-def execute_jsl_script(script_path):
-    """Execute the JSL script in JMP"""
-    try:
-        print("🚀 Opening JSL script in JMP...")
-        subprocess.run([
-            "open",
-            "-a", "JMP 18",
-            script_path
-        ], check=True)
-        print("✅ JSL script opened in JMP successfully!")
-        print("👆 The script should run automatically, or press Cmd+R in JMP to execute")
-    except subprocess.CalledProcessError as e:
-        print(f"❌ Error opening JSL script in JMP: {e}")
-        print(f"📁 You can manually open the file: {os.path.abspath(script_path)}")
-
-
-if __name__ == "__main__":
-    automate_k3p_thickness_workflow_part2()

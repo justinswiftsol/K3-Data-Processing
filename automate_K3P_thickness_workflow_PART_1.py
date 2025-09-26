@@ -61,7 +61,10 @@ def extract_wdxrf_absorbance_data():
             "https://spreadsheets.google.com/feeds",
             "https://www.googleapis.com/auth/drive"
         ]
-        creds = ServiceAccountCredentials.from_json_keyfile_name("service_account.json", scope)
+        # Get the directory where this script is located
+        script_dir = os.path.dirname(os.path.abspath(__file__))
+        service_account_path = os.path.join(script_dir, "service_account.json")
+        creds = ServiceAccountCredentials.from_json_keyfile_name(service_account_path, scope)
         client = gspread.authorize(creds)
 
         # Open the Witness Sample Tracker sheet

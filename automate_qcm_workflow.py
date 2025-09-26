@@ -15,15 +15,15 @@ def automate_qcm_workflow():
     4. Generate comprehensive JSL script
     5. Execute the JSL script in JMP
     """
-    
+
     print("🚀 Starting QCM Workflow Automation...")
-    
+
     # Get experiment numbers from user
     previous_exp = input("Enter the previous experiment number (e.g., 0395): K3P")
     current_exp = input("Enter the current experiment number (e.g., 0398): K3P")
-    
+
     print(f"\n📋 Processing experiments: K3P{previous_exp} → K3P{current_exp}")
-    
+
     # Step 1: Get reference lines from Google Sheets
     print("\n📊 Fetching reference lines from Google Sheets...")
     sheet_data = get_reference_lines_from_sheets()
@@ -76,21 +76,24 @@ def get_reference_lines_from_sheets():
             "https://spreadsheets.google.com/feeds",
             "https://www.googleapis.com/auth/drive"
         ]
-        creds = ServiceAccountCredentials.from_json_keyfile_name("service_account.json", scope)
+        # Get the directory where this script is located
+        script_dir = os.path.dirname(os.path.abspath(__file__))
+        service_account_path = os.path.join(script_dir, "service_account.json")
+        creds = ServiceAccountCredentials.from_json_keyfile_name(service_account_path, scope)
         client = gspread.authorize(creds)
 
         # Open the reference times sheet
         sheet = client.open_by_url(
             "https://docs.google.com/spreadsheets/d/1g9Vb8OJJ67kEaGhXoxyBRHD-3oxouyLQr66b5V6JnVE")
-        
+
         # Step 1: Get the target date from "K3 PC3 Runs" worksheet
         print("📊 Getting target date from K3 PC3 Runs...")
         runs_worksheet = sheet.worksheet("K3 PC3 Runs")
         runs_data = runs_worksheet.get_all_records()
-        
+
         # Find the latest date (August 21st, 2025)
         latest_date = None
-        
+
         for row in runs_data:
             if 'Date' in row and row['Date']:
                 try:
@@ -105,40 +108,40 @@ def get_reference_lines_from_sheets():
                             continue
                     else:
                         continue
-                    
+
                     if latest_date is None or row_date > latest_date:
                         latest_date = row_date
                 except:
                     continue
-        
+
         print(f"📅 Target date from K3 PC3 Runs: {latest_date}")
-        
-        # Step 2: Get the JSL strings from "K3 Timestamps to JMP Time" worksheet  
+
+        # Step 2: Get the JSL strings from "K3 Timestamps to JMP Time" worksheet
         print("📊 Getting JSL strings from K3 Timestamps to JMP Time...")
         jsl_worksheet = sheet.worksheet("K3 Timestamps to JMP Time")
         all_values = jsl_worksheet.get_all_values()
-        
+
         if not all_values or len(all_values) < 2:
             print("❌ No data found in the K3 Timestamps to JMP Time worksheet")
             return {}
-        
+
         print(f"🔍 Found {len(all_values)} rows of JSL data (header + data rows)")
-        
+
         # Get data from ALL rows (each row contains one reference line)
         result = {
             'date': latest_date,
-            'time_range_string': '',     # Column P (index 15) from first data row
-            'ref_lines_h': [],           # Column H (index 7) from all data rows
-            'ref_lines_i': []            # Column I (index 8) from all data rows
+            'time_range_string': '',  # Column P (index 15) from first data row
+            'ref_lines_h': [],  # Column H (index 7) from all data rows
+            'ref_lines_i': []  # Column I (index 8) from all data rows
         }
-        
+
         # Get time range string from Column P (index 15) of first data row
         if len(all_values) > 1 and len(all_values[1]) > 15:
             result['time_range_string'] = str(all_values[1][15])  # Column P from first row
             print(f"📊 Time range string (P): {result['time_range_string']}")
         else:
             print("❌ Column P (index 15) not available!")
-        
+
         # Collect ALL reference lines from Column H (index 7) from all data rows
         ref_lines_h = []
         for i, row in enumerate(all_values[1:], 1):  # Skip header row
@@ -146,27 +149,27 @@ def get_reference_lines_from_sheets():
                 ref_line = str(row[7]).strip()
                 if ref_line and "Add Ref Line" in ref_line:
                     ref_lines_h.append(ref_line)
-        
+
         result['ref_lines_h'] = ref_lines_h
         print(f"📏 Reference lines H: Found {len(ref_lines_h)} lines")
         if ref_lines_h:
             print(f"📏 First H line: {ref_lines_h[0]}")
-        
-        # Collect ALL reference lines from Column I (index 8) from all data rows  
+
+        # Collect ALL reference lines from Column I (index 8) from all data rows
         ref_lines_i = []
         for i, row in enumerate(all_values[1:], 1):  # Skip header row
             if len(row) > 8 and row[8].strip():  # Column I
                 ref_line = str(row[8]).strip()
                 if ref_line and "Add Ref Line" in ref_line:
                     ref_lines_i.append(ref_line)
-        
+
         result['ref_lines_i'] = ref_lines_i
         print(f"📏 Reference lines I: Found {len(ref_lines_i)} lines")
         if ref_lines_i:
             print(f"📏 First I line: {ref_lines_i[0]}")
 
         return result
-        
+
     except Exception as e:
         print(f"❌ Error accessing Google Sheets: {e}")
         return {}
@@ -195,34 +198,34 @@ def generate_comprehensive_jsl(previous_exp, current_exp, csv_file, sheet_data):
     time_range_string = sheet_data.get('time_range_string', '')
     ref_lines_h = sheet_data.get('ref_lines_h', [])
     ref_lines_i = sheet_data.get('ref_lines_i', [])
-    
+
     # Parse the time range string to extract Min and Max values
     min_time = 3838604400  # Default fallback
     max_time = 3838633200  # Default fallback
-    
+
     if time_range_string:
         # Extract Min and Max values from the time_range_string
         import re
         min_match = re.search(r'Min\(\s*(\d+)\s*\)', time_range_string)
         max_match = re.search(r'Max\(\s*(\d+)\s*\)', time_range_string)
-        
+
         if min_match:
             min_time = int(min_match.group(1))
         if max_match:
             max_time = int(max_match.group(1))
-    
+
     print(f"🕐 Using time range: Min({min_time}), Max({max_time}) - covers full day")
-    
-    # Combine reference lines from columns H and I  
+
+    # Combine reference lines from columns H and I
     all_ref_lines = ref_lines_h + ref_lines_i
-    
+
     # Remove trailing commas from each line and then join properly
     clean_ref_lines = []
     for line in all_ref_lines:
         clean_line = line.rstrip(',').strip()
         if clean_line:
             clean_ref_lines.append(clean_line)
-    
+
     combined_ref_lines = ",\n\t\t\t\t".join(clean_ref_lines) + "," if clean_ref_lines else ""
 
     # Generate the comprehensive JSL script
