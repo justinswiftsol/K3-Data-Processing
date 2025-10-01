@@ -1,0 +1,116 @@
+// Auto-generated JSL script to add PC3 timestamps
+// Generated on: 2025-08-14 10:24:56
+
+// Open the existing JMP file
+dt = Open("/Users/justinparayno/Library/CloudStorage/GoogleDrive-justin.parayno@swiftsolar.com/Shared drives/Shared with Swift computers (INSECURE)/K3/K3 Tool Data/2025/PC3 Time Windows.jmp");
+
+// Add new rows with timestamp data
+
+// Add row with Start=2508131044, End=2508131048
+dt << Add Rows(1);
+current_row = N Rows(dt);
+dt:"Run Start"[current_row] = Num(2508131044);
+dt:"Run End"[current_row] = Num(2508131048);
+
+// Add row with Start=2508131115, End=2508131119
+dt << Add Rows(1);
+current_row = N Rows(dt);
+dt:"Run Start"[current_row] = Num(2508131115);
+dt:"Run End"[current_row] = Num(2508131119);
+
+// Add row with Start=2508131140, End=2508131144
+dt << Add Rows(1);
+current_row = N Rows(dt);
+dt:"Run Start"[current_row] = Num(2508131140);
+dt:"Run End"[current_row] = Num(2508131144);
+
+// Add row with Start=2508131209, End=2508131213
+dt << Add Rows(1);
+current_row = N Rows(dt);
+dt:"Run Start"[current_row] = Num(2508131209);
+dt:"Run End"[current_row] = Num(2508131213);
+
+// Add row with Start=2508131252, End=2508131256
+dt << Add Rows(1);
+current_row = N Rows(dt);
+dt:"Run Start"[current_row] = Num(2508131252);
+dt:"Run End"[current_row] = Num(2508131256);
+
+// Add row with Start=2508131326, End=2508131330
+dt << Add Rows(1);
+current_row = N Rows(dt);
+dt:"Run Start"[current_row] = Num(2508131326);
+dt:"Run End"[current_row] = Num(2508131330);
+
+// Add row with Start=2508131412, End=2508131416
+dt << Add Rows(1);
+current_row = N Rows(dt);
+dt:"Run Start"[current_row] = Num(2508131412);
+dt:"Run End"[current_row] = Num(2508131416);
+
+// Add row with Start=2508131447, End=2508131451
+dt << Add Rows(1);
+current_row = N Rows(dt);
+dt:"Run Start"[current_row] = Num(2508131447);
+dt:"Run End"[current_row] = Num(2508131451);
+
+// Add row with Start=2508131516, End=2508131520
+dt << Add Rows(1);
+current_row = N Rows(dt);
+dt:"Run Start"[current_row] = Num(2508131516);
+dt:"Run End"[current_row] = Num(2508131520);
+
+// Add row with Start=2508131545, End=2508131549
+dt << Add Rows(1);
+current_row = N Rows(dt);
+dt:"Run Start"[current_row] = Num(2508131545);
+dt:"Run End"[current_row] = Num(2508131549);
+
+// Add row with Start=2508131612, End=2508131616
+dt << Add Rows(1);
+current_row = N Rows(dt);
+dt:"Run Start"[current_row] = Num(2508131612);
+dt:"Run End"[current_row] = Num(2508131616);
+
+// Add row with Start=2508131648, End=2508131652
+dt << Add Rows(1);
+current_row = N Rows(dt);
+dt:"Run Start"[current_row] = Num(2508131648);
+dt:"Run End"[current_row] = Num(2508131652);
+
+// Add row with Start=2508131717, End=2508131721
+dt << Add Rows(1);
+current_row = N Rows(dt);
+dt:"Run Start"[current_row] = Num(2508131717);
+dt:"Run End"[current_row] = Num(2508131721);
+
+// Add row with Start=2508131748, End=2508131752
+dt << Add Rows(1);
+current_row = N Rows(dt);
+dt:"Run Start"[current_row] = Num(2508131748);
+dt:"Run End"[current_row] = Num(2508131752);
+
+// Add row with Start=2508131813, End=2508131817
+dt << Add Rows(1);
+current_row = N Rows(dt);
+dt:"Run Start"[current_row] = Num(2508131813);
+dt:"Run End"[current_row] = Num(2508131817);
+
+// Add row with Start=2508131845, End=2508131849
+dt << Add Rows(1);
+current_row = N Rows(dt);
+dt:"Run Start"[current_row] = Num(2508131845);
+dt:"Run End"[current_row] = Num(2508131849);
+
+// Add row with Start=2508131919, End=2508131923
+dt << Add Rows(1);
+current_row = N Rows(dt);
+dt:"Run Start"[current_row] = Num(2508131919);
+dt:"Run End"[current_row] = Num(2508131923);
+
+// Save the updated file
+dt << Save();
+
+// Display confirmation message
+Print("✅ Successfully added 17 timestamp pairs to JMP file");
+Print("📊 Data added to rows " || Char(N Rows(dt) - 17 + 1) || " through " || Char(N Rows(dt)));

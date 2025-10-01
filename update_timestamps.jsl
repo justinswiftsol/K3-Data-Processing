@@ -1,7 +1,13 @@
 // Auto-generated JSL script for K3 PC3 QCM temperature logger
+<<<<<<< HEAD
 // Generated on: 2025-09-30 17:03:01
 // Experiment: K3P0430
 // Number of timestamp pairs: 17
+=======
+// Generated on: 2025-09-26 10:39:21
+// Experiment: K3P0428
+// Number of timestamp pairs: 18
+>>>>>>> 3d9640bf77f5beffd70d21eafaf603feabdb54a6
 
 // Open the JMP file
 dt = Open("/Users/justinparayno/Library/CloudStorage/GoogleDrive-justin.parayno@swiftsolar.com/Shared drives/Shared with Swift computers (INSECURE)/K3/K3 Tool Data/2025/PC3 Time Windows.jmp");
@@ -11,6 +17,7 @@ dt = Open("/Users/justinparayno/Library/CloudStorage/GoogleDrive-justin.parayno@
 // Timestamp pair 1
 dt << Add Rows(1);
 current_row = N Rows(dt);
+<<<<<<< HEAD
 dt:"Run Start"[current_row] = 2509291037;
 dt:"Run End"[current_row] = 2509291041;
 // Timestamp pair 2
@@ -93,10 +100,103 @@ dt << Add Rows(1);
 current_row = N Rows(dt);
 dt:"Run Start"[current_row] = 2509291927;
 dt:"Run End"[current_row] = 2509291931;
+=======
+dt:"Run Start"[current_row] = 2509251146;
+dt:"Run End"[current_row] = 2509251150;
+// Timestamp pair 2
+dt << Add Rows(1);
+current_row = N Rows(dt);
+dt:"Run Start"[current_row] = 2509251210;
+dt:"Run End"[current_row] = 2509251214;
+// Timestamp pair 3
+dt << Add Rows(1);
+current_row = N Rows(dt);
+dt:"Run Start"[current_row] = 2509251238;
+dt:"Run End"[current_row] = 2509251242;
+// Timestamp pair 4
+dt << Add Rows(1);
+current_row = N Rows(dt);
+dt:"Run Start"[current_row] = 2509251310;
+dt:"Run End"[current_row] = 2509251314;
+// Timestamp pair 5
+dt << Add Rows(1);
+current_row = N Rows(dt);
+dt:"Run Start"[current_row] = 2509251342;
+dt:"Run End"[current_row] = 2509251346;
+// Timestamp pair 6
+dt << Add Rows(1);
+current_row = N Rows(dt);
+dt:"Run Start"[current_row] = 2509251428;
+dt:"Run End"[current_row] = 2509251432;
+// Timestamp pair 7
+dt << Add Rows(1);
+current_row = N Rows(dt);
+dt:"Run Start"[current_row] = 2509251504;
+dt:"Run End"[current_row] = 2509251508;
+// Timestamp pair 8
+dt << Add Rows(1);
+current_row = N Rows(dt);
+dt:"Run Start"[current_row] = 2509251555;
+dt:"Run End"[current_row] = 2509251559;
+// Timestamp pair 9
+dt << Add Rows(1);
+current_row = N Rows(dt);
+dt:"Run Start"[current_row] = 2509251626;
+dt:"Run End"[current_row] = 2509251630;
+// Timestamp pair 10
+dt << Add Rows(1);
+current_row = N Rows(dt);
+dt:"Run Start"[current_row] = 2509251650;
+dt:"Run End"[current_row] = 2509251654;
+// Timestamp pair 11
+dt << Add Rows(1);
+current_row = N Rows(dt);
+dt:"Run Start"[current_row] = 2509251723;
+dt:"Run End"[current_row] = 2509251727;
+// Timestamp pair 12
+dt << Add Rows(1);
+current_row = N Rows(dt);
+dt:"Run Start"[current_row] = 2509251802;
+dt:"Run End"[current_row] = 2509251805;
+// Timestamp pair 13
+dt << Add Rows(1);
+current_row = N Rows(dt);
+dt:"Run Start"[current_row] = 2509251833;
+dt:"Run End"[current_row] = 2509251837;
+// Timestamp pair 14
+dt << Add Rows(1);
+current_row = N Rows(dt);
+dt:"Run Start"[current_row] = 2509251912;
+dt:"Run End"[current_row] = 2509251916;
+// Timestamp pair 15
+dt << Add Rows(1);
+current_row = N Rows(dt);
+dt:"Run Start"[current_row] = 2509251950;
+dt:"Run End"[current_row] = 2509251954;
+// Timestamp pair 16
+dt << Add Rows(1);
+current_row = N Rows(dt);
+dt:"Run Start"[current_row] = 2509252017;
+dt:"Run End"[current_row] = 2509252021;
+// Timestamp pair 17
+dt << Add Rows(1);
+current_row = N Rows(dt);
+dt:"Run Start"[current_row] = 2509252045;
+dt:"Run End"[current_row] = 2509252049;
+// Timestamp pair 18
+dt << Add Rows(1);
+current_row = N Rows(dt);
+dt:"Run Start"[current_row] = 2509252119;
+dt:"Run End"[current_row] = 2509252123;
+>>>>>>> 3d9640bf77f5beffd70d21eafaf603feabdb54a6
 
 // Save the file
 dt << Save();
 
 // Display completion message
+<<<<<<< HEAD
 Print("✅ Successfully added 17 timestamp pairs to the JMP file!");
+=======
+Print("✅ Successfully added 18 timestamp pairs to the JMP file!");
+>>>>>>> 3d9640bf77f5beffd70d21eafaf603feabdb54a6
 Print("💾 File has been saved.");
