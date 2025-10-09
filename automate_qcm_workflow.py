@@ -50,7 +50,8 @@ def automate_qcm_workflow():
 
     # Step 4: Save JSL script
     script_filename = f"automate_qcm_K3P{previous_exp}_to_K3P{current_exp}.jsl"
-    script_path = os.path.join(os.getcwd(), script_filename)
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    script_path = os.path.join(script_dir, script_filename)
 
     with open(script_path, 'w') as f:
         f.write(jsl_script)
